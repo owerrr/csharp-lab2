@@ -12,3 +12,4 @@ D:\Users\denis.biskup\Documents\GitHub\csharp-lab2\UnitTests-Phone\ConsoleApp1\o
 D:\Users\denis.biskup\Documents\GitHub\csharp-lab2\UnitTests-Phone\ConsoleApp1\obj\Debug\net8.0\ConsoleApp1.pdb
 D:\Users\denis.biskup\Documents\GitHub\csharp-lab2\UnitTests-Phone\ConsoleApp1\obj\Debug\net8.0\ConsoleApp1.genruntimeconfig.cache
 D:\Users\denis.biskup\Documents\GitHub\csharp-lab2\UnitTests-Phone\ConsoleApp1\obj\Debug\net8.0\ref\ConsoleApp1.dll
+D:\Users\denis.biskup\Documents\GitHub\csharp-lab2\UnitTests-Phone\ConsoleApp1\obj\Debug\net8.0\ConsoleApp1.sourcelink.json
