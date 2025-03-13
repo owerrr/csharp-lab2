@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "D:\\Users\\denis.biskup\\Documents\\GitHub\\csharp-lab2\\UnitTests-Phone\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{8D51DAEB-65EF-4203-AAC9-174E31C6F647}|PhoneTests\\PhoneTests.csproj|d:\\users\\denis.biskup\\documents\\github\\csharp-lab2\\unittests-phone\\phonetests\\phonetests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8D51DAEB-65EF-4203-AAC9-174E31C6F647}|PhoneTests\\PhoneTests.csproj|solutionrelative:phonetests\\phonetests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{EE304737-4750-47DB-9139-67E7E29F9775}|ConsoleApp1\\ConsoleApp1.csproj|d:\\users\\denis.biskup\\documents\\github\\csharp-lab2\\unittests-phone\\consoleapp1\\class\\phone.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{EE304737-4750-47DB-9139-67E7E29F9775}|ConsoleApp1\\ConsoleApp1.csproj|solutionrelative:consoleapp1\\class\\phone.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8D51DAEB-65EF-4203-AAC9-174E31C6F647}|PhoneTests\\PhoneTests.csproj|d:\\users\\denis.biskup\\documents\\github\\csharp-lab2\\unittests-phone\\phonetests\\phonetests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8D51DAEB-65EF-4203-AAC9-174E31C6F647}|PhoneTests\\PhoneTests.csproj|solutionrelative:phonetests\\phonetests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{EE304737-4750-47DB-9139-67E7E29F9775}|ConsoleApp1\\ConsoleApp1.csproj|d:\\users\\denis.biskup\\documents\\github\\csharp-lab2\\unittests-phone\\consoleapp1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -22,17 +22,17 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "Phone.cs",
               "DocumentMoniker": "D:\\Users\\denis.biskup\\Documents\\GitHub\\csharp-lab2\\UnitTests-Phone\\ConsoleApp1\\Class\\Phone.cs",
               "RelativeDocumentMoniker": "ConsoleApp1\\Class\\Phone.cs",
               "ToolTip": "D:\\Users\\denis.biskup\\Documents\\GitHub\\csharp-lab2\\UnitTests-Phone\\ConsoleApp1\\Class\\Phone.cs",
               "RelativeToolTip": "ConsoleApp1\\Class\\Phone.cs",
-              "ViewState": "AgIAACMAAAAAAAAAAAAAAEwAAABIAAAAAAAAAA==",
+              "ViewState": "AgIAADYAAAAAAAAAAAAmwEAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-03-06T09:24:51.006Z",
               "IsPinned": true,
@@ -40,13 +40,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "PhoneTests.cs",
               "DocumentMoniker": "D:\\Users\\denis.biskup\\Documents\\GitHub\\csharp-lab2\\UnitTests-Phone\\PhoneTests\\PhoneTests.cs",
               "RelativeDocumentMoniker": "PhoneTests\\PhoneTests.cs",
               "ToolTip": "D:\\Users\\denis.biskup\\Documents\\GitHub\\csharp-lab2\\UnitTests-Phone\\PhoneTests\\PhoneTests.cs",
               "RelativeToolTip": "PhoneTests\\PhoneTests.cs",
-              "ViewState": "AgIAAAwAAAAAAAAAAIAwwBYAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAIkAAAAAAAAAAAAswFEAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-03-06T09:37:59.969Z",
               "EditorCaption": ""
@@ -59,7 +59,7 @@
               "RelativeDocumentMoniker": "ConsoleApp1\\Program.cs",
               "ToolTip": "D:\\Users\\denis.biskup\\Documents\\GitHub\\csharp-lab2\\UnitTests-Phone\\ConsoleApp1\\Program.cs",
               "RelativeToolTip": "ConsoleApp1\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-03-06T09:24:08.182Z",
               "EditorCaption": ""
