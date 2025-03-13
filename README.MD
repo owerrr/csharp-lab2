@@ -1,7 +1,7 @@
 # Zadania z Programowania Obiektowego
 
 ## UnitTest Phone
-- [Source code](./Konto-w-banku)
+- [Source code](./UnitTests-Phone)
 - [Źródło](https://github.com/WSEI-csharp202/UnitTests-Phone)
 ## Cw2
 - [Source code](./cw2)
