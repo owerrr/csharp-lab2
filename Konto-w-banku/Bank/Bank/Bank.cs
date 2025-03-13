@@ -28,6 +28,11 @@
                    $"Status konta:\t{status}";
         }
 
+        protected void UpdateBalance(decimal money)
+        {
+            bilans += money;
+        }
+
         public virtual void Wplata(decimal kwota)
         {
             if (zablokowane) throw new ArgumentException("Konto jest zablokowane!");
@@ -59,5 +64,40 @@
         public void OdblokujKonto() => zablokowane = false;
     }
 
-    
+    public class KontoPlus : Konto
+    {
+        private decimal limit;
+        public decimal Limit {
+            get => limit;
+            set => limit = value > 0 ? value : 0;
+        }
+        public KontoPlus(string klient, decimal bilansNaStart = 0, decimal limit = 100) : base(klient, bilansNaStart)
+        {
+            Limit = limit;
+        }
+
+        public override void Wyplata(decimal kwota) {
+            if (Zablokowane)
+                throw new ArgumentException("Konto jest zablokowane!");
+
+            if(kwota > (Bilans + limit))
+                throw new ArgumentException("Nieprawidłowa kwota wypłaty!");
+
+            base.UpdateBalance(-kwota);
+
+            if (Bilans < 0)
+                base.BlokujKonto();
+        }
+
+        public override void Wplata(decimal kwota)
+        {
+            if (kwota <= 0)
+                throw new ArgumentException("Nieprawidłowa kwota wpłaty!!");
+            
+            base.UpdateBalance(kwota);
+
+            if (kwota > 0)
+                base.OdblokujKonto();
+        }
+    }
 }
