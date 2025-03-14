@@ -1,10 +1,14 @@
-﻿namespace ConsoleApp1
+﻿using Bank;
+
+namespace ConsoleApp1
 {
-    internal class Program
+    public class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            Bank.Bank b1 = new();
+
+            Console.ReadLine();
         }
     }
 }
