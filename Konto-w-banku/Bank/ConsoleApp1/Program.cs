@@ -8,7 +8,12 @@ namespace ConsoleApp1
         {
             Bank.Bank b1 = new();
 
-            Console.ReadLine();
+            Console.WriteLine("Do you want to save logs? (Y/n)");
+            string ans = Console.ReadLine();
+            if(ans == "" || ans.ToLower() == "y")
+            {
+                Console.WriteLine("saving logs...");
+            }
         }
     }
 }

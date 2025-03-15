@@ -199,7 +199,7 @@ namespace KontoTests
                 k1.OdblokujKonto();
                 decimal kwota = 100M;
                 k1.Wyplata(kwota);
-                Assert.IsTrue(k1.Bilans == (bilans + kwota), "Wystapil blad! Bilans konta sie nie zgadza!");
+                Assert.IsTrue(k1.Bilans == (bilans - kwota), "Wystapil blad! Bilans konta sie nie zgadza!");
             }
             catch (ArgumentException ex)
             {
