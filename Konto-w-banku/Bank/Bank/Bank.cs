@@ -8,8 +8,8 @@ namespace Bank
     {
         private static int BankId { get; set; }
         private List<string> defaultCommands = ["help", "account", "quit"];
-        private List<string> accountCommands = ["create plus", "create default", "list", "back"];
-        private List<string> accountDetailsCommands = ["deposit", "withdraw", "delete", "back"];
+        private List<string> accountCommands = ["create plus", "create default", "list", "back", "help"];
+        private List<string> accountDetailsCommands = ["deposit", "withdraw", "changeplan", "delete", "back", "limit", "help"];
         private IDictionary<int, Konto> accountList = new Dictionary<int, Konto>();
         public int GetBankId() => BankId;
         public Bank()
@@ -18,8 +18,9 @@ namespace Bank
             accountList.Add(0, new Konto("Andrzej", 100));
             accountList.Add(1, new KontoPlus("Robert", 500, 100));
             accountList.Add(2, new KontoPlus("Michal", 100, 200));
-            WriteInterface();
 
+            WriteInterface();
+            WaitForCommand();
         }
 
         ~Bank()
@@ -30,50 +31,57 @@ namespace Bank
 
         private void WriteInterface(string GUI = "default", List<object> additionalInfo = null)
         {
+            string TEXT = "Something went wrong writing GUI...\n";
             if(GUI == "default")
             {
-                Console.WriteLine("==================================\n" +
-                                "| WELCOME IN YOUR PERSONAL BANK! |\n" +
-                                "|--------------------------------|\n" +
-                                "| USAGE:                         |\n" +
-                                "|   - Help                       |\n" +
-                                "|   - Account                    |\n" +
-                                "|   - Quit                       |\n" +
-                                "==================================\n");
-                WaitForCommand();
+                TEXT =  "==================================\n" +
+                        "| WELCOME IN YOUR PERSONAL BANK! |\n" +
+                        "|--------------------------------|\n" +
+                        "| USAGE:                         |\n" +
+                        "|   - Help                       |\n" +
+                        "|   - Account                    |\n" +
+                        "|   - Quit                       |\n" +
+                        "==================================\n";
+                
             }
             else if(GUI == "help")
             {
-                Console.WriteLine("\nDefault commands:\n" +
-                                    "\to 'Help' - You are already here...\n" +
-                                    "\to 'Account' - Enter Bank account manager\n" +
-                                    "\nAccount commands:\n" +
-                                    "\to 'Create' 'type'(Default/Plus) - Create new account\n" +
-                                    "\to 'List' - Show all accounts\n" +
-                                    "\to 'View' 'id' - View account details\n" +
-                                    "\nAccount details commands:\n" +
-                                    "\to 'Deposit' 'money' - deposits money into account\n" +
-                                    "\to 'Withdraw' 'money' - 'withdraws money from account\n" +
-                                    "\to 'Delete' 'confirm account name' - deletes account\n" +
-                                    "");
+                TEXT =  "\nDefault commands:\n" +
+                        "\to 'Help' - You are already here...\n" +
+                        "\to 'Account' - Enter Bank account manager\n" +
+                        "\nAccount commands:\n" +
+                        "\to 'Create' 'type'(Default/Plus) - Create new account\n" +
+                        "\to 'List' - Show all accounts\n" +
+                        "\to 'View' 'id' - View account details\n" +
+                        "\nAccount details commands:\n" +
+                        "\to 'Deposit' 'money' - deposits money into account\n" +
+                        "\to 'Withdraw' 'money' - 'withdraws money from account\n" +
+                        "\to 'Changeplan' - Changes plan for eg. Default => Plus\n" +
+                        "\to 'Delete' 'confirm account name' - deletes account\n" +
+                        "Account detals additional commands (For Plus Accounts)\n" +
+                        "\to 'Limit' 'set/add/remove' 'value' - limit manipulation\n" +
+                        "";
             }
             else if(GUI == "account")
             {
-                Console.WriteLine("\nAccount commands:\n" +
-                                    "\to 'Create' 'type'(Default/Plus) - Create new account\n" +
-                                    "\to 'List' - Show all accounts\n" +
-                                    "\to 'View' 'id' - View account details\n" +
-                                    "\to 'Back' - Back to menu\n");
+                TEXT =  "\nAccount commands:\n" +
+                        "\to 'Create' 'type'(Default/Plus) - Create new account\n" +
+                        "\to 'List' - Show all accounts\n" +
+                        "\to 'View' 'id' - View account details\n" +
+                        "\to 'Back' - Back to menu\n";
             }
             else if(GUI == "accdetails")
             {
-                Console.WriteLine($"\nVIEWING ACCOUNT NO. {additionalInfo[0]}\n{additionalInfo[1]}\nAccount type:\t{additionalInfo[2]}\n" + 
-                                    "\nAccount details commands:\n" +
-                                    "\to 'Deposit' 'money' - deposits money into account\n" +
-                                    "\to 'Withdraw' 'money' - 'withdraws money from account\n" +
-                                    "\to 'Delete' 'confirm account name' - deletes account\n" +
-                                    "\to 'Back' - Back to Account commands");
+                TEXT  = "\nAccount details commands:\n" +
+                        "\to 'Deposit' 'money' - deposits money into account\n" +
+                        "\to 'Withdraw' 'money' - 'withdraws money from account\n";
+                if (additionalInfo[0] == "Plus") TEXT += "\to 'Limit' 'set/add/remove' 'value' - limit manipulation\n";
+                TEXT += "\to 'ChangePlan' - Change your account plan\n" +
+                        "\to 'Delete' 'confirm account name' - deletes account\n" +
+                        "\to 'Back' - Back to Account commands";
             }
+
+            Console.WriteLine(TEXT);
         }
 
         private void WaitForCommand(string cmdType = "default", bool msgDup = false)
@@ -114,9 +122,10 @@ namespace Bank
                 int accId = Int32.Parse(cmdType.Split(' ')[1]);
                 var Account = accountList.First(x => x.Key == accId).Value;
                 string accType = Account is KontoPlus ? "Plus" : "Default";
+                Console.WriteLine($"\nVIEWING ACCOUNT NO. {accId}\n{Account}\nAccount type:\t{accType}\n");
                 if (!msgDup)
                 {
-                    List<object> temp = [accId, Account, accType];
+                    List<object> temp = [accType];
                     WriteInterface("accdetails", temp);
                 }
                 string answer = "";
@@ -129,7 +138,8 @@ namespace Bank
                     if (!accountDetailsCommands.Contains(answer)
                         && !answer.StartsWith("deposit ")
                         && !answer.StartsWith("withdraw ")
-                        && !answer.StartsWith("delete "))
+                        && !answer.StartsWith("delete ")
+                        && !answer.StartsWith("limit "))
                         Console.WriteLine("Invalid Command!");
                     else break;
                 }
@@ -158,8 +168,12 @@ namespace Bank
 
         private void AccountCommandHandler(string command)
         {
-            Console.WriteLine(command);
-            if(command.StartsWith("create "))
+            if(command == "help")
+            {
+                WriteInterface("account");
+                WaitForCommand("account");
+            }
+            else if(command.StartsWith("create "))
             {
                 //Console.WriteLine(command);
                 var cmd = command.Split(' ');
@@ -179,23 +193,24 @@ namespace Bank
                 {
                     Console.Write("Account starting balance: ");
                     startingBalance = Convert.ToDecimal(Console.ReadLine());
+                    if (cmd[1] == "plus")
+                    {
+                        Console.Write("Limit: ");
+                        decimal limit = Convert.ToDecimal(Console.ReadLine());
+                        int accId = accountList.OrderBy(x => x.Key).Select(x => x.Key).Last() + 1;
+                        accountList.Add(accId, new KontoPlus(name, startingBalance, limit));
+                    }
+                    else
+                    {
+                        int accId = accountList.OrderBy(x => x.Key).Select(x => x.Key).Last() + 1;
+                        accountList.Add(accId, new Konto(name, startingBalance));
+                    }
+                    
                 }
                 catch(Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex);
                     WaitForCommand("account");
-                }
-               
-
-                if (cmd[1] == "plus")
-                {
-                    Console.Write("Limit: ");
-                    decimal limit = Convert.ToDecimal(Console.ReadLine());
-                    accountList.Add(accountList.Count, new KontoPlus(name, startingBalance, limit));
-                }
-                else
-                {
-                    accountList.Add(accountList.Count, new Konto(name, startingBalance));
                 }
 
                 WaitForCommand("account");
@@ -243,11 +258,15 @@ namespace Bank
 
         private void AccountDetailsCommandHandler(string command, object Account = null, string cmdType = "")
         {
-            if(command == "back")
+            if(command == "help")
+            {
+                WaitForCommand(cmdType);
+            }
+            else if (command == "back")
             {
                 WaitForCommand("account");
             }
-            else if(command.StartsWith("deposit ") && command.Length > 7)
+            else if (command.StartsWith("deposit ") && command.Length > 7)
             {
                 try
                 {
@@ -255,7 +274,65 @@ namespace Bank
                     Console.WriteLine($"Depositing {money}...");
                     if (Account is Konto) (Account as Konto).Wplata(money);
                     else if (Account is KontoPlus) (Account as KontoPlus).Wplata(money);
-                    else throw new Exception("Invalid account!");
+                    else throw new Exception("Something went wrong while depositing... Try again!");
+
+                    WaitForCommand(cmdType, true);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    WaitForCommand("account");
+                }
+            }
+            else if (command.StartsWith("withdraw ") && command.Length > 7)
+            {
+                try
+                {
+                    int money = Int32.Parse(command.Split(' ')[1]);
+                    Console.WriteLine($"Withdrawing {money}...");
+                    if (Account is Konto) (Account as Konto).Wyplata(money);
+                    else if (Account is KontoPlus) (Account as KontoPlus).Wyplata(money);
+                    else throw new Exception("Something went wrong while withdrawing...");
+
+                    WaitForCommand(cmdType, true);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    WaitForCommand(cmdType, true);
+                }
+            }
+            else if (command.StartsWith("limit "))
+            {
+                try
+                {
+                    var cmd = command.Split(" ");
+                    if (cmd.Length != 3) throw new Exception("Invalid command usage!");
+
+                    if (cmd[1] == "set")
+                    {
+                        (Account as KontoPlus).Limit = Convert.ToDecimal(cmd[2]);
+                        Console.WriteLine($"Setting new limit to {cmd[2]}");
+
+                    }
+                    else if (cmd[1] == "add")
+                    {
+                        (Account as KontoPlus).Limit += Convert.ToDecimal(cmd[2]);
+                        Console.WriteLine($"Adding {cmd[2]} to limit. New limit: {(Account as KontoPlus).Limit}");
+
+                    }
+                    else if (cmd[1] == "remove")
+                    {
+                        if ((Account as KontoPlus).Limit < Convert.ToDecimal(cmd[2]))
+                            throw new Exception("Limit can't be a negative value!");
+                        (Account as KontoPlus).Limit -= Convert.ToDecimal(cmd[2]);
+                        Console.WriteLine($"Removing {cmd[2]} from limit. New limit: {(Account as KontoPlus).Limit}");
+
+                    }
+                    else
+                    {
+                        throw new Exception($"limit {cmd[1]} {cmd[2]} is not valid command!");
+                    }
 
                     WaitForCommand(cmdType, true);
                 }
@@ -265,17 +342,23 @@ namespace Bank
                     WaitForCommand("account");
                 }
             }
-            else if(command.StartsWith("withdraw ") && command.Length > 7)
+            else if (command == "changeplan")
             {
                 try
                 {
-                    int money = Int32.Parse(command.Split(' ')[1]);
-                    Console.WriteLine($"Withdrawing {money}...");
-                    if (Account is Konto) (Account as Konto).Wyplata(money);
-                    else if (Account is KontoPlus) (Account as KontoPlus).Wyplata(money);
-                    else throw new Exception("Invalid account!");
-
-                    WaitForCommand(cmdType,true );
+                    int accId = Int32.Parse(cmdType.Split(' ')[1]);
+                    if(Account is KontoPlus)
+                    {
+                        var tmp = Account as KontoPlus;
+                        if (tmp.Bilans < 0) throw new Exception("Cannot convert account! Default accounts can't have negative balance!");
+                        accountList[accId] = new Konto(tmp.Klient, tmp.Bilans);
+                    }
+                    else
+                    {
+                        var tmp = Account as Konto;
+                        accountList[accId] = new KontoPlus(tmp.Klient, tmp.Bilans, 100M);
+                    }
+                    WaitForCommand("account");
                 }
                 catch (Exception ex)
                 {
@@ -283,13 +366,13 @@ namespace Bank
                     WaitForCommand("account");
                 }
             }
-            else if(command.StartsWith("delete ") && command.Length > 7)
+            else if (command.StartsWith("delete ") && command.Length > 7)
             {
                 var cmd = command.Split(' ');
                 if (cmd[1] == (Account as Konto).Klient.ToLower())
                 {
-                    var key = accountList.First(x => x.Value == Account);
-                    accountList.Remove(key.Key);
+                    int accId = Int32.Parse(cmdType.Split(' ')[1]);
+                    accountList.Remove(accId);
                     Console.WriteLine("Succesfully deleted account!");
                     WaitForCommand("account");
                 }
@@ -305,6 +388,19 @@ namespace Bank
 
     public class Konto
     {
+        public KontoPlus ConvertToPlus()
+        {
+            KontoPlus tmp = new(Klient, Bilans, 100M);
+            return tmp;
+        }
+        public Konto ConvertToKonto()
+        {
+            if (Bilans < 0)
+                throw new ArgumentException("Nie mozna utworzyc konta!\nNajpierw ureguluj zaleglosci!");
+
+            Konto tmp = new(Klient, Bilans);
+            return tmp;
+        }
 
         private string klient;
         public string Klient {
@@ -332,7 +428,7 @@ namespace Bank
                    $"Status konta:\t{status}";
         }
 
-        protected void UpdateBalance(decimal money)
+        public void UpdateBalance(decimal money)
         {
             bilans += money;
         }
@@ -420,6 +516,80 @@ namespace Bank
                    $"Bilans:\t\t{Bilans} ({Limit})\n" +
                    $"Status konta:\t{status}";
         }
+
+        public override string ToString()
+        {
+            var status = Zablokowane ? "Zablokowane" : "Odblokowane";
+            return $"Nazwa:\t\t{Klient}\n" +
+                   $"Bilans:\t\t{Bilans} ({Limit})\n" +
+                   $"Status konta:\t{status}";
+        }
+    }
+
+    public class KontoLimit
+    {
+        public static explicit operator KontoPlus(KontoLimit k)
+        {
+            return new KontoPlus(k.Klient, k.Bilans, k.Limit);
+        }
+
+        public static explicit operator Konto(KontoLimit k)
+        {
+            return new Konto(k.Klient, k.Bilans);
+        }
+
+        private Konto konto { get; set; }
+        private decimal limit { get; set; }
+        public decimal Bilans { get => konto.Bilans; }
+        public string Klient { get => konto.Klient; }
+        public bool Zablokowane { get => konto.Zablokowane; }
+        public decimal Limit
+        {
+            get => limit;
+            set => limit = value > 0 ? value : 0;
+        }
+
+        public KontoLimit(string name, decimal bilansNaStart = 0, decimal limit = 100)
+        {
+            konto = new Konto(name, bilansNaStart);
+            Limit = limit;
+        }
+
+        public string Statystyki()
+        {
+            var status = Zablokowane ? "Zablokowane" : "Odblokowane";
+            return $"Nazwa:\t\t{Klient}\n" +
+                   $"Bilans:\t\t{Bilans} ({Limit})\n" +
+                   $"Status konta:\t{status}";
+        }
+
+        public void Wyplata(decimal kwota)
+        {
+            if (Zablokowane)
+                throw new ArgumentException("Konto jest zablokowane!");
+
+            if (kwota > (Bilans + limit))
+                throw new ArgumentException("Nieprawidłowa kwota wypłaty!");
+
+            konto.UpdateBalance(-kwota);
+
+            if (Bilans < 0)
+                konto.BlokujKonto();
+        }
+
+        public void Wplata(decimal kwota)
+        {
+            if (kwota <= 0)
+                throw new ArgumentException("Nieprawidłowa kwota wpłaty!!");
+
+            konto.UpdateBalance(kwota);
+
+            if (kwota > 0)
+                konto.OdblokujKonto();
+        }
+
+        public void BlokujKonto() => konto.BlokujKonto();
+        public void OdblokujeKonto() => konto.OdblokujKonto();
 
         public override string ToString()
         {
