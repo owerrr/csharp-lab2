@@ -3,6 +3,78 @@
 namespace KontoLimitTests
 {
     [TestClass]
+    public class TEST_KontoLimit_GetProperties
+    {
+        [TestMethod]
+        public void KontoLimit_GetKlient()
+        {
+            string klient = "Andrzej";
+            decimal bilans = 100M;
+            decimal limit = 100M;
+
+            try
+            {
+                KontoLimit k1 = new(klient, bilans, limit);
+                Assert.IsTrue(k1.Klient == klient, "Wystapil blad/y! Nazwa klienta się nie zgadza!");
+            }
+            catch (ArgumentException ex)
+            {
+                Assert.Fail("Wystąpił/y błąd/y!");
+            }
+        }
+        [TestMethod]
+        public void KontoLimit_GetBilans()
+        {
+            string klient = "Andrzej";
+            decimal bilans = 100M;
+            decimal limit = 100M;
+
+            try
+            {
+                KontoLimit k1 = new(klient, bilans, limit);
+                Assert.IsTrue(k1.Bilans == bilans, "Wystapil blad/y! bilans klienta się nie zgadza!");
+            }
+            catch (ArgumentException ex)
+            {
+                Assert.Fail("Wystąpił/y błąd/y!");
+            }
+        }
+        [TestMethod]
+        public void KontoLimit_GetLimit()
+        {
+            string klient = "Andrzej";
+            decimal bilans = 100M;
+            decimal limit = 100M;
+
+            try
+            {
+                KontoLimit k1 = new(klient, bilans, limit);
+                Assert.IsTrue(k1.Limit == limit, "Wystapil blad/y! limit klienta się nie zgadza!");
+            }
+            catch (ArgumentException ex)
+            {
+                Assert.Fail("Wystąpił/y błąd/y!");
+            }
+        }
+        [TestMethod]
+        public void KontoLimit_GetBlock()
+        {
+            string klient = "Andrzej";
+            decimal bilans = 100M;
+            decimal limit = 100M;
+
+            try
+            {
+                KontoLimit k1 = new(klient, bilans, limit);
+                Assert.IsTrue(k1.Zablokowane == false, "Wystapil blad/y! stan konta klienta się nie zgadza!");
+            }
+            catch (ArgumentException ex)
+            {
+                Assert.Fail("Wystąpił/y błąd/y!");
+            }
+        }
+    }
+    [TestClass]
     public class TEST_KontoLimit_Create
     {
         [TestMethod]
@@ -99,7 +171,7 @@ namespace KontoLimitTests
             }
             catch (ArgumentException ex)
             {
-                Assert.IsTrue(ex.ToString().Contains("Nieprawidłowa kwota wpłaty!"), "Wystąpił błąd/y!");
+                Assert.IsTrue(ex.ToString().Contains("Invalid deposit value!"), "Wystąpił błąd/y!");
             }
         }
         [TestMethod]
@@ -162,7 +234,7 @@ namespace KontoLimitTests
             }
             catch (ArgumentException ex)
             {
-                Assert.IsTrue(ex.ToString().Contains("Konto jest zablokowane!"), "Wystąpił błąd/y!");
+                Assert.IsTrue(ex.ToString().Contains("Account is locked!"), "Wystąpił błąd/y!");
             }
         }
         [TestMethod]
@@ -180,7 +252,46 @@ namespace KontoLimitTests
             }
             catch (ArgumentException ex)
             {
-                Assert.IsTrue(ex.ToString().Contains("Nieprawidłowa kwota wypłaty!"), "Wystąpił błąd/y!");
+                Assert.IsTrue(ex.ToString().Contains("Invalid withdraw value!"), "Wystąpił błąd/y!");
+            }
+        }
+    }
+
+    [TestClass]
+    public class TEST_KontoLimit_Conversions
+    {
+        [TestMethod]
+        public void KontoLimit_ConvertTo_Konto_Valid()
+        {
+            string klient = "Andrzej";
+            decimal bilans = 100M;
+
+            try
+            {
+                KontoLimit k1 = new(klient, bilans);
+                Konto k2 = (Konto)k1;
+                Assert.IsTrue(k2 is Konto, "Rzutowanie nie wykonało się poprawnie.");
+            }
+            catch (ArgumentException ex)
+            {
+                Assert.Fail(ex.Message);
+            }
+        }
+        [TestMethod]
+        public void KontoLimit_ConvertTo_KontoPlus_Valid()
+        {
+            string klient = "Andrzej";
+            decimal bilans = 100M;
+
+            try
+            {
+                KontoLimit k1 = new(klient, bilans);
+                Konto k2 = (KontoPlus)k1;
+                Assert.IsTrue(k2 is KontoPlus, "Rzutowanie nie wykonało się poprawnie.");
+            }
+            catch (ArgumentException ex)
+            {
+                Assert.Fail(ex.Message);
             }
         }
     }

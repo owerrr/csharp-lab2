@@ -16,11 +16,11 @@ namespace ConsoleApp1
             var molenda = new Konto("Molenda", 100);
             Console.WriteLine(molenda + "\n");
             molenda = molenda.ConvertToPlus();
-            Console.WriteLine(molenda + "\n");
+            Console.WriteLine("po rzutowaniu Konto=>KontoPlus:\n" + molenda + "\n");
             molenda.Wyplata(100);
             Console.WriteLine(molenda + "\n");
             molenda = molenda.ConvertToKonto();
-            Console.WriteLine(molenda+"\n");
+            Console.WriteLine("po rzutowaniu KontoPlus=>Konto:\n" + molenda+"\n");
 
             KontoLimit testLimit = new("klient1", 200, 500);
             Console.WriteLine(testLimit + "\n");
@@ -33,8 +33,7 @@ namespace ConsoleApp1
             KontoPlus testLimitToPlus = (KontoPlus)testLimit;
             Console.WriteLine(testLimitToPlus + "\n");
             Konto testLimitToDefault = (Konto)testLimit;
-            Console.WriteLine(testLimitToDefault + "\n");
-
+            Console.WriteLine(testLimitToDefault);
             Console.WriteLine("=============KONIEC TESTOWANIA\n");
 
             Bank.Bank b1 = new();

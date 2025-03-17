@@ -3,6 +3,79 @@
 namespace KontoPlusTests
 {
     [TestClass]
+    public class TEST_KontoPlus_GetProperties
+    {
+        [TestMethod]
+        public void KontoPlus_GetKlient()
+        {
+            string klient = "Andrzej";
+            decimal bilans = 100M;
+            decimal limit = 100M;
+
+            try
+            {
+                KontoPlus k1 = new(klient, bilans, limit);
+                Assert.IsTrue(k1.Klient == klient, "Wystapil blad/y! Nazwa klienta się nie zgadza!");
+            }
+            catch (ArgumentException ex)
+            {
+                Assert.Fail("Wystąpił/y błąd/y!");
+            }
+        }
+        [TestMethod]
+        public void KontoPlus_GetBilans()
+        {
+            string klient = "Andrzej";
+            decimal bilans = 100M;
+            decimal limit = 100M;
+
+            try
+            {
+                KontoPlus k1 = new(klient, bilans, limit);
+                Assert.IsTrue(k1.Bilans == bilans, "Wystapil blad/y! bilans klienta się nie zgadza!");
+            }
+            catch (ArgumentException ex)
+            {
+                Assert.Fail("Wystąpił/y błąd/y!");
+            }
+        }
+        [TestMethod]
+        public void KontoPlus_GetLimit()
+        {
+            string klient = "Andrzej";
+            decimal bilans = 100M;
+            decimal limit = 100M;
+
+            try
+            {
+                KontoPlus k1 = new(klient, bilans, limit);
+                Assert.IsTrue(k1.Limit == limit, "Wystapil blad/y! limit klienta się nie zgadza!");
+            }
+            catch (ArgumentException ex)
+            {
+                Assert.Fail("Wystąpił/y błąd/y!");
+            }
+        }
+        [TestMethod]
+        public void KontoPlus_GetAccountBlock()
+        {
+            string klient = "Andrzej";
+            decimal bilans = 100M;
+            decimal limit = 100M;
+
+            try
+            {
+                KontoPlus k1 = new(klient, bilans, limit);
+                Assert.IsTrue(k1.Zablokowane == false, "Wystapil blad/y! stan konta klienta się nie zgadza!");
+            }
+            catch (ArgumentException ex)
+            {
+                Assert.Fail("Wystąpił/y błąd/y!");
+            }
+        }
+    }
+
+    [TestClass]
     public class TEST_KontoPlus_Create
     {
         [TestMethod]
@@ -99,7 +172,7 @@ namespace KontoPlusTests
             }
             catch (ArgumentException ex)
             {
-                Assert.IsTrue(ex.ToString().Contains("Nieprawidłowa kwota wpłaty!"), "Wystąpił błąd/y!");
+                Assert.IsTrue(ex.ToString().Contains("Invalid deposit value!"), "Wystąpił błąd/y!");
             }
         }
         [TestMethod]
@@ -162,7 +235,7 @@ namespace KontoPlusTests
             }
             catch (ArgumentException ex)
             {
-                Assert.IsTrue(ex.ToString().Contains("Konto jest zablokowane!"), "Wystąpił błąd/y!");
+                Assert.IsTrue(ex.ToString().Contains("Account is locked!"), "Wystąpił błąd/y!");
             }
         }
         [TestMethod]
@@ -180,7 +253,31 @@ namespace KontoPlusTests
             }
             catch (ArgumentException ex)
             {
-                Assert.IsTrue(ex.ToString().Contains("Nieprawidłowa kwota wypłaty!"), "Wystąpił błąd/y!");
+                Assert.IsTrue(ex.ToString().Contains("Invalid withdraw value!"), "Wystąpił błąd/y!");
+            }
+        }
+    }
+
+    [TestClass]
+    public class TEST_KontoPlus_Conversions
+    {
+        [TestMethod]
+        public void KontoPlus_ConvertTo_Konto_Valid()
+        {
+            string klient = "Andrzej";
+            decimal bilans = 100M;
+            decimal limit = 100M;
+
+            try
+            {
+                var k1 = new KontoPlus("Molenda", 100M, 100M);
+                var k2 = k1.ConvertToKonto();
+
+                Assert.IsFalse(k2 is KontoPlus, "Rzutowanie nie wykonało się poprawnie.");
+            }
+            catch (ArgumentException ex)
+            {
+                Assert.Fail(ex.Message);
             }
         }
     }

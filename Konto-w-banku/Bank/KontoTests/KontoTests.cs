@@ -3,6 +3,59 @@ using Bank;
 namespace KontoTests
 {
     [TestClass]
+    public class TEST_Konto_GetProperties
+    {
+        [TestMethod]
+        public void Konto_GetKlient()
+        {
+            string klient = "Andrzej";
+            decimal bilans = 100M;
+
+            try
+            {
+                Konto k1 = new(klient, bilans);
+                Assert.IsTrue(k1.Klient == klient, "Wystapil blad/y! Nazwa klienta siê nie zgadza!");
+            }
+            catch (ArgumentException ex)
+            {
+                Assert.Fail("Wyst¹pi³/y b³¹d/y!");
+            }
+        }
+        [TestMethod]
+        public void Konto_GetBilans()
+        {
+            string klient = "Andrzej";
+            decimal bilans = 100M;
+
+            try
+            {
+                Konto k1 = new(klient, bilans);
+                Assert.IsTrue(k1.Bilans == bilans, "Wystapil blad/y! bilans klienta siê nie zgadza!");
+            }
+            catch (ArgumentException ex)
+            {
+                Assert.Fail("Wyst¹pi³/y b³¹d/y!");
+            }
+        }
+        [TestMethod]
+        public void Konto_GetBlock()
+        {
+            string klient = "Andrzej";
+            decimal bilans = 100M;
+
+            try
+            {
+                Konto k1 = new(klient, bilans);
+                Assert.IsTrue(k1.Zablokowane == false, "Wystapil blad/y! stan konta klienta siê nie zgadza!");
+            }
+            catch (ArgumentException ex)
+            {
+                Assert.Fail("Wyst¹pi³/y b³¹d/y!");
+            }
+        }
+    }
+
+    [TestClass]
     public class TEST_Konto_Create
     {
         [TestMethod]
@@ -35,7 +88,7 @@ namespace KontoTests
             }
             catch (ArgumentException ex)
             {
-                Assert.IsTrue(ex.ToString().Contains("Nazwa klienta nie moze byc pusta!"), "Wystapil blad!");
+                Assert.IsTrue(ex.ToString().Contains("Account name can't be empty!"), "Wystapil blad!");
             }
         }
 
@@ -73,7 +126,7 @@ namespace KontoTests
                 k1.OdblokujKonto();
 
                 string res = k1.Statystyki();
-                string pred = $"Nazwa:\t\t{klient}\nBilans:\t\t{bilans}\nStatus konta:\tOdblokowane";
+                string pred = $"Name:\t\t{klient}\nBalance:\t\t{bilans}\nAccount status:\tUnlocked";
 
                 Assert.IsTrue(res.Equals(pred), "Wystapil blad! Sprawdz funkcje Statystyki");
             }
@@ -96,7 +149,7 @@ namespace KontoTests
                 k1.BlokujKonto();
 
                 string res = k1.Statystyki();
-                string pred = $"Nazwa:\t\t{klient}\nBilans:\t\t{bilans}\nStatus konta:\tZablokowane";
+                string pred = $"Name:\t\t{klient}\nBalance:\t\t{bilans}\nAccount status:\tLocked";
 
                 Assert.IsTrue(res.Equals(pred), "Wystapil blad! Sprawdz funkcje Statystyki");
             }
@@ -183,7 +236,7 @@ namespace KontoTests
             }
             catch (ArgumentException ex)
             {
-                Assert.IsTrue(ex.ToString().Contains("Konto jest zablokowane!"), "Wystapil blad! Sprawdz dokladnie metode Wplata()");
+                Assert.IsTrue(ex.ToString().Contains("Account is locked!"), "Wystapil blad! Sprawdz dokladnie metode Wplata()");
             }
         }
 
@@ -222,7 +275,7 @@ namespace KontoTests
             }
             catch (ArgumentException ex)
             {
-                Assert.IsTrue(ex.ToString().Contains("Konto jest zablokowane!"), "Wystapil blad! Sprawdz dokladnie metode Wyplata()");
+                Assert.IsTrue(ex.ToString().Contains("Account is locked!"), "Wystapil blad! Sprawdz dokladnie metode Wyplata()");
             }
         }
 
@@ -243,7 +296,7 @@ namespace KontoTests
             }
             catch (ArgumentException ex)
             {
-                Assert.IsTrue(ex.ToString().Contains("Nieprawidlowa kwota wplaty!!"), "Wystapil blad!");
+                Assert.IsTrue(ex.ToString().Contains("Invalid deposit value!!"), "Wystapil blad!");
             }
         }
 
@@ -262,7 +315,7 @@ namespace KontoTests
             }
             catch (ArgumentException ex)
             {
-                Assert.IsTrue(ex.ToString().Contains("Konto jest zablokowane!"), "Wystapil blad! Sprawdz dokladnie metode Wplata()");
+                Assert.IsTrue(ex.ToString().Contains("Account is locked!"), "Wystapil blad! Sprawdz dokladnie metode Wplata()");
             }
         }
 
@@ -276,12 +329,12 @@ namespace KontoTests
             {
                 Konto k1 = new(klient, bilans);
                 k1.OdblokujKonto();
-                decimal kwota = -100M;
-                k1.Wplata(kwota);
+                decimal kwota = 100M;
+                k1.Wyplata(kwota);
             }
             catch (ArgumentException ex)
             {
-                Assert.IsTrue(ex.ToString().Contains("Nieprawidlowa kwota wplaty!!"), "Wystapil blad!");
+                Assert.IsTrue(ex.ToString().Contains("Invalid withdraw value!!"), "Wystapil blad!");
             }
         }
 
@@ -300,7 +353,7 @@ namespace KontoTests
             }
             catch (ArgumentException ex)
             {
-                Assert.IsTrue(ex.ToString().Contains("Konto jest zablokowane!"), "Wystapil blad! Sprawdz dokladnie metode Wplata()");
+                Assert.IsTrue(ex.ToString().Contains("Account is locked!"), "Wystapil blad! Sprawdz dokladnie metode Wplata()");
             }
         }
 
@@ -319,7 +372,7 @@ namespace KontoTests
             }
             catch (ArgumentException ex)
             {
-                Assert.IsTrue(ex.ToString().Contains("Nieprawidlowa kwota wyplaty!!"), "Wystapil blad!");
+                Assert.IsTrue(ex.ToString().Contains("Invalid withdraw value!!"), "Wystapil blad!");
             }
         }
 
@@ -338,7 +391,29 @@ namespace KontoTests
             }
             catch (ArgumentException ex)
             {
-                Assert.IsTrue(ex.ToString().Contains("Konto jest zablokowane!"), "Wystapil blad! Sprawdz dokladnie metode Wyplata()");
+                Assert.IsTrue(ex.ToString().Contains("Account is locked!"), "Wystapil blad! Sprawdz dokladnie metode Wyplata()");
+            }
+        }
+    }
+
+    [TestClass]
+    public class TEST_Konto_Conversions
+    {
+        [TestMethod]
+        public void Konto_ConvertTo_KontoPlus_Valid()
+        {
+            string klient = "Andrzej";
+            decimal bilans = 100M;
+
+            try
+            {
+                Konto k1 = new(klient, bilans);
+                k1 = k1.ConvertToPlus();
+                Assert.IsTrue(k1 is KontoPlus, "Rzutowanie nie wykona³o siê poprawnie.");
+            }
+            catch (ArgumentException ex)
+            {
+                Assert.Fail(ex.Message);
             }
         }
     }

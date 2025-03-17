@@ -49,6 +49,7 @@ namespace Bank
                 TEXT =  "\nDefault commands:\n" +
                         "\to 'Help' - You are already here...\n" +
                         "\to 'Account' - Enter Bank account manager\n" +
+                        "\to 'Quit' - Quit Bank\n" +
                         "\nAccount commands:\n" +
                         "\to 'Create' 'type'(Default/Plus) - Create new account\n" +
                         "\to 'List' - Show all accounts\n" +
@@ -76,7 +77,7 @@ namespace Bank
                         "\to 'Deposit' 'money' - deposits money into account\n" +
                         "\to 'Withdraw' 'money' - 'withdraws money from account\n";
                 if (additionalInfo[0] == "Plus") TEXT += "\to 'Limit' 'set/add/remove' 'value' - limit manipulation\n";
-                TEXT += "\to 'ChangePlan' - Change your account plan\n" +
+                TEXT += "\to 'Changeplan' - Change your account plan\n" +
                         "\to 'Delete' 'confirm account name' - deletes account\n" +
                         "\to 'Back' - Back to Account commands";
             }
@@ -253,6 +254,7 @@ namespace Bank
             else if(command == "back")
             {
                 WriteInterface();
+                WaitForCommand();
             }
         }
 
@@ -396,7 +398,7 @@ namespace Bank
         public Konto ConvertToKonto()
         {
             if (Bilans < 0)
-                throw new ArgumentException("Nie mozna utworzyc konta!\nNajpierw ureguluj zaleglosci!");
+                throw new ArgumentException("Cannot create account!\nFirstly pay your debts!");
 
             Konto tmp = new(Klient, Bilans);
             return tmp;
@@ -405,7 +407,7 @@ namespace Bank
         private string klient;
         public string Klient {
             get => klient;
-            private set => klient = value.Trim() != "" ? value.Trim() : throw new ArgumentException("Nazwa klienta nie moze byc pusta!"); }
+            private set => klient = value.Trim() != "" ? value.Trim() : throw new ArgumentException("Account name can't be empty!"); }
         private decimal bilans;
         public decimal Bilans {
             get => bilans;
@@ -422,10 +424,10 @@ namespace Bank
 
         public virtual string Statystyki()
         {
-            var status = zablokowane ? "Zablokowane" : "Odblokowane";
-            return $"Nazwa:\t\t{klient}\n" +
-                   $"Bilans:\t\t{bilans}\n" +
-                   $"Status konta:\t{status}";
+            var status = zablokowane ? "Locked" : "Unlocked";
+            return $"Name:\t\t{klient}\n" +
+                   $"Balance:\t{bilans}\n" +
+                   $"Account status:\t{status}";
         }
 
         public void UpdateBalance(decimal money)
@@ -435,7 +437,7 @@ namespace Bank
 
         public virtual void Wplata(decimal kwota)
         {
-            if (zablokowane) throw new ArgumentException("Konto jest zablokowane!");
+            if (zablokowane) throw new ArgumentException("Account is locked!");
 
             if (kwota > 0)
             {
@@ -443,13 +445,13 @@ namespace Bank
             }
             else
             {
-                throw new ArgumentException("Nieprawidlowa kwota wplaty!!");
+                throw new ArgumentException("Invalid deposit value!!");
             }
         }
         
         public virtual void Wyplata(decimal kwota)
         {
-            if (zablokowane) throw new ArgumentException("Konto jest zablokowane!");
+            if (zablokowane) throw new ArgumentException("Account is locked!");
 
             if (kwota > 0 && kwota <= bilans)
             {
@@ -457,7 +459,7 @@ namespace Bank
             }
             else
             {
-                throw new ArgumentException("Nieprawidlowa kwota wyplaty!!");
+                throw new ArgumentException("Invalid withdraw value!!");
             }
         }
 
@@ -466,10 +468,10 @@ namespace Bank
 
         public override string ToString()
         {
-            var status = zablokowane ? "Zablokowane" : "Odblokowane";
-            return $"Nazwa:\t\t{klient}\n" +
-                   $"Bilans:\t\t{bilans}\n" +
-                   $"Status konta:\t{status}";
+            var status = zablokowane ? "Locked" : "Unlocked";
+            return $"Name:\t\t{klient}\n" +
+                   $"Balance:\t{bilans}\n" +
+                   $"Account status:\t{status}";
         }
     }
 
@@ -487,10 +489,10 @@ namespace Bank
 
         public override void Wyplata(decimal kwota) {
             if (Zablokowane)
-                throw new ArgumentException("Konto jest zablokowane!");
+                throw new ArgumentException("Account is locked!");
 
-            if(kwota > (Bilans + limit))
-                throw new ArgumentException("Nieprawidłowa kwota wypłaty!");
+            if(kwota > (Bilans + limit) || kwota <= 0)
+                throw new ArgumentException("Invalid withdraw value!");
 
             base.UpdateBalance(-kwota);
 
@@ -501,28 +503,28 @@ namespace Bank
         public override void Wplata(decimal kwota)
         {
             if (kwota <= 0)
-                throw new ArgumentException("Nieprawidłowa kwota wpłaty!!");
+                throw new ArgumentException("Invalid deposit value!!");
             
             base.UpdateBalance(kwota);
 
-            if (kwota > 0)
+            if (Bilans >= 0)
                 base.OdblokujKonto();
         }
 
         public override string Statystyki()
         {
-            var status = Zablokowane ? "Zablokowane" : "Odblokowane";
-            return $"Nazwa:\t\t{Klient}\n" +
-                   $"Bilans:\t\t{Bilans} ({Limit})\n" +
-                   $"Status konta:\t{status}";
+            var status = Zablokowane ? "Locked" : "Unlocked";
+            return $"Name:\t\t{Klient}\n" +
+                   $"Balance:\t{Bilans} ({Limit})\n" +
+                   $"Account status:\t{status}";
         }
 
         public override string ToString()
         {
-            var status = Zablokowane ? "Zablokowane" : "Odblokowane";
-            return $"Nazwa:\t\t{Klient}\n" +
-                   $"Bilans:\t\t{Bilans} ({Limit})\n" +
-                   $"Status konta:\t{status}";
+            var status = Zablokowane ? "Locked" : "Unlocked";
+            return $"Name:\t\t{Klient}\n" +
+                   $"Balance:\t{Bilans} ({Limit})\n" +
+                   $"Account status:\t{status}";
         }
     }
 
@@ -557,19 +559,19 @@ namespace Bank
 
         public string Statystyki()
         {
-            var status = Zablokowane ? "Zablokowane" : "Odblokowane";
-            return $"Nazwa:\t\t{Klient}\n" +
-                   $"Bilans:\t\t{Bilans} ({Limit})\n" +
-                   $"Status konta:\t{status}";
+            var status = Zablokowane ? "Locked" : "Unlocked";
+            return $"Name:\t\t{Klient}\n" +
+                   $"Balance:\t{Bilans} ({Limit})\n" +
+                   $"Account status:\t{status}";
         }
 
         public void Wyplata(decimal kwota)
         {
             if (Zablokowane)
-                throw new ArgumentException("Konto jest zablokowane!");
+                throw new ArgumentException("Account is locked!");
 
-            if (kwota > (Bilans + limit))
-                throw new ArgumentException("Nieprawidłowa kwota wypłaty!");
+            if (kwota > (Bilans + limit) || kwota <= 0)
+                throw new ArgumentException("Invalid withdraw value!");
 
             konto.UpdateBalance(-kwota);
 
@@ -580,11 +582,11 @@ namespace Bank
         public void Wplata(decimal kwota)
         {
             if (kwota <= 0)
-                throw new ArgumentException("Nieprawidłowa kwota wpłaty!!");
+                throw new ArgumentException("Invalid deposit value!!");
 
             konto.UpdateBalance(kwota);
 
-            if (kwota > 0)
+            if (Bilans >= 0)
                 konto.OdblokujKonto();
         }
 
@@ -593,10 +595,10 @@ namespace Bank
 
         public override string ToString()
         {
-            var status = Zablokowane ? "Zablokowane" : "Odblokowane";
-            return $"Nazwa:\t\t{Klient}\n" +
-                   $"Bilans:\t\t{Bilans} ({Limit})\n" +
-                   $"Status konta:\t{status}";
+            var status = Zablokowane ? "Locked" : "Unlocked";
+            return $"Name:\t\t{Klient}\n" +
+                   $"Balance:\t{Bilans} ({Limit})\n" +
+                   $"Account status:\t{status}";
         }
     }
 }
