@@ -310,19 +310,23 @@
 
                     if (cmd[1] == "set")
                     {
+                        if (Convert.ToDecimal(cmd[2]) < 0)
+                            throw new Exception("Limit can't be a negative value!");
                         (Account as KontoPlus).Limit = Convert.ToDecimal(cmd[2]);
                         Console.WriteLine($"Setting new limit to {cmd[2]}");
 
                     }
                     else if (cmd[1] == "add")
                     {
+                        if (Convert.ToDecimal(cmd[2]) < 0)
+                            throw new Exception("You can't add negative value to a limit!");
                         (Account as KontoPlus).Limit += Convert.ToDecimal(cmd[2]);
                         Console.WriteLine($"Adding {cmd[2]} to limit. New limit: {(Account as KontoPlus).Limit}");
 
                     }
                     else if (cmd[1] == "remove")
                     {
-                        if ((Account as KontoPlus).Limit < Convert.ToDecimal(cmd[2]))
+                        if ((Account as KontoPlus).Limit < Convert.ToDecimal(cmd[2]) || Convert.ToDecimal(cmd[2]) < 0)
                             throw new Exception("Limit can't be a negative value!");
                         (Account as KontoPlus).Limit -= Convert.ToDecimal(cmd[2]);
                         Console.WriteLine($"Removing {cmd[2]} from limit. New limit: {(Account as KontoPlus).Limit}");
