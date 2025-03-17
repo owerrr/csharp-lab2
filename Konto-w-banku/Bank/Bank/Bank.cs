@@ -1,9 +1,6 @@
-﻿using System.Security.AccessControl;
-using System.Security.Principal;
-using System.Text;
-
-namespace Bank
+﻿namespace Bank
 {
+    #region UI
     public class Bank
     {
         private static int BankId { get; set; }
@@ -386,7 +383,7 @@ namespace Bank
             WaitForCommand("account");
         }
     }
-
+    #endregion
 
     public class Konto
     {
