@@ -126,7 +126,7 @@ namespace KontoTests
                 k1.OdblokujKonto();
 
                 string res = k1.Statystyki();
-                string pred = $"Name:\t\t{klient}\nBalance:\t\t{bilans}\nAccount status:\tUnlocked";
+                string pred = $"Name:\t\t{klient}\nBalance:\t{bilans}\nAccount status:\tUnlocked";
 
                 Assert.IsTrue(res.Equals(pred), "Wystapil blad! Sprawdz funkcje Statystyki");
             }
@@ -149,7 +149,7 @@ namespace KontoTests
                 k1.BlokujKonto();
 
                 string res = k1.Statystyki();
-                string pred = $"Name:\t\t{klient}\nBalance:\t\t{bilans}\nAccount status:\tLocked";
+                string pred = $"Name:\t\t{klient}\nBalance:\t{bilans}\nAccount status:\tLocked";
 
                 Assert.IsTrue(res.Equals(pred), "Wystapil blad! Sprawdz funkcje Statystyki");
             }
