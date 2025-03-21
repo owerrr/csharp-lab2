@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Matrix2D\Matrix2D.csproj" />
+    <ProjectReference Include="..\Matrix2D\MatrixClass.csproj" />
   </ItemGroup>
 
 </Project>

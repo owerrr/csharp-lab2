@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35828.75 d17.13
+VisualStudioVersion = 17.13.35828.75
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{8FB684D4-27AD-469E-B425-A6E8A3849C5F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{8FB684D4-27AD-469E-B425-A6E8A3849C5F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Matrix2D", "Matrix2D\Matrix2D.csproj", "{05E1F8D2-0EAA-47D7-B06F-1465E4BC23F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatrixClass", "Matrix2D\MatrixClass.csproj", "{05E1F8D2-0EAA-47D7-B06F-1465E4BC23F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatrixTests", "MatrixTests\MatrixTests.csproj", "{0296AA5A-16CD-40C3-917A-9F68547EBD1C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{05E1F8D2-0EAA-47D7-B06F-1465E4BC23F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05E1F8D2-0EAA-47D7-B06F-1465E4BC23F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05E1F8D2-0EAA-47D7-B06F-1465E4BC23F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0296AA5A-16CD-40C3-917A-9F68547EBD1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0296AA5A-16CD-40C3-917A-9F68547EBD1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0296AA5A-16CD-40C3-917A-9F68547EBD1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0296AA5A-16CD-40C3-917A-9F68547EBD1C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

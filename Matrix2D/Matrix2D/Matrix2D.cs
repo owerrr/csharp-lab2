@@ -20,9 +20,16 @@ namespace MatrixClass
 
         public Matrix2D()
         {
-            Data = [1, 0, 0, 1];
+            Data = Id;
         }
 
+        public Matrix2D(int[] data)
+        {
+            if (data.Length != 4)
+                throw new ArgumentException("Invalid data!");
+
+            Data = data;
+        }
         public static void Transpose(Matrix2D a)
         {
             if (a.Data == null) return;
@@ -32,18 +39,18 @@ namespace MatrixClass
             a.Data[2] = temp;
         }
 
-        public static int Determinant(Matrix2D a)
+        public static int Determinant(Matrix2D? a)
         {
-            if (a.Data == null)
-                throw new ArgumentException("Matrix not found!");
+            if (a is null)
+                throw new NullReferenceException("Matrix not found!");
 
             int det = a.Data[0] * a.Data[3] + a.Data[1] * a.Data[2];
             return det;
         }
         public int Det()
         {
-            if (Data == null)
-                throw new ArgumentException("Matrix not found!");
+            if (Data is null)
+                throw new NullReferenceException("Matrix not found!");
 
             int det = Data[0] * Data[3] + Data[1] * Data[2];
             return det;
@@ -54,7 +61,7 @@ namespace MatrixClass
             return $"[[{Data[0]} {Data[1]}], [{Data[2]} {Data[3]}]]";
         }
 
-        public bool Equals(Matrix2D? other)
+        public bool Equals(Matrix2D other)
         {
             if (other == null) return false;
 
@@ -67,17 +74,17 @@ namespace MatrixClass
             return equal;
         }
 
-        public override bool Equals(object? obj)
+        public override bool Equals(object obj)
         {
             Matrix2D m2 = obj as Matrix2D;
-            if (m2 == null) return false;
+            if (m2 is null) return false;
 
             return Equals(m2);
         }
 
-        public static bool Equals(Matrix2D? a, Matrix2D? b)
+        public static bool Equals(Matrix2D a, Matrix2D b)
         {
-            if (a == null || b == null) return false;
+            if (a is null || b is null) return false;
 
             bool equal = true;
             for (int i = 0; i < a.Data.Length; i++)
@@ -90,7 +97,7 @@ namespace MatrixClass
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Data);
+            return HashCode.Combine(Data[0], Data[1], Data[2], Data[3]);
         }
 
         public static bool operator ==(Matrix2D a, Matrix2D b) { 
@@ -105,14 +112,16 @@ namespace MatrixClass
             if (a.Data == null || b.Data == null)
                 throw new ArgumentException("Invalid input!");
 
+            int[] res = new int[4];
+
             try
             {
                 for (int i = 0; i < b.Data.Length; i++)
                 {
-                    a.Data[i] += b.Data[i];
+                    res[i] = a.Data[i] + b.Data[i];
                 }
 
-                return a;
+                return new(res);
             }
             catch(Exception ex)
             {
@@ -124,14 +133,16 @@ namespace MatrixClass
             if (a.Data == null || b.Data == null)
                 throw new ArgumentException("Invalid input!");
 
+            int[] res = new int[4];
+
             try
             {
                 for (int i = 0; i < b.Data.Length; i++)
                 {
-                    a.Data[i] -= b.Data[i];
+                    res[i] = a.Data[i] - b.Data[i];
                 }
 
-                return a;
+                return new(res);
             }
             catch (Exception ex)
             {
@@ -143,14 +154,16 @@ namespace MatrixClass
             if (a.Data == null || b.Data == null)
                 throw new ArgumentException("Invalid input!");
 
+            int[] res = new int[4];
+
             try
             {
-                a.Data[0] = a.Data[0] * b.Data[0] + a.Data[1] * b.Data[2];
-                a.Data[1] = a.Data[0] * b.Data[1] + a.Data[1] * b.Data[3];
-                a.Data[2] = a.Data[2] * b.Data[0] + a.Data[3] * b.Data[2];
-                a.Data[3] = a.Data[2] * b.Data[1] + a.Data[3] * b.Data[3];
+                res[0] = a.Data[0] * b.Data[0] + a.Data[1] * b.Data[2];
+                res[1] = a.Data[0] * b.Data[1] + a.Data[1] * b.Data[3];
+                res[2] = a.Data[2] * b.Data[0] + a.Data[3] * b.Data[2];
+                res[3] = a.Data[2] * b.Data[1] + a.Data[3] * b.Data[3];
 
-                return a;
+                return new(res);
             }
             catch (Exception ex)
             {
@@ -163,14 +176,16 @@ namespace MatrixClass
             if (a.Data == null)
                 throw new ArgumentException("Invalid input!");
 
+            int[] res = new int[4];
+
             try
             {
                 for(int i = 0; i < a.Data.Length; i++)
                 {
-                    a.Data[i] *= b;
+                    res[i] = a.Data[i] * b;
                 }
 
-                return a;
+                return new(res);
             }
             catch (Exception ex)
             {
@@ -182,14 +197,16 @@ namespace MatrixClass
             if (a.Data == null)
                 throw new ArgumentException("Invalid input!");
 
+            int[] res = new int[4];
+
             try
             {
                 for (int i = 0; i < a.Data.Length; i++)
                 {
-                    a.Data[i] *= b;
+                    res[i] = a.Data[i] * b;
                 }
 
-                return a;
+                return new(res);
             }
             catch (Exception ex)
             {
@@ -202,14 +219,16 @@ namespace MatrixClass
             if (a.Data == null)
                 throw new ArgumentException("Invalid input!");
 
+            int[] res = new int[4];
+
             try
             {
                 for (int i = 0; i < a.Data.Length; i++)
                 {
-                    a.Data[i] *= -1;
+                    res[i] = a.Data[i] * -1;
                 }
 
-                return a;
+                return new(res);
             }
             catch (Exception ex)
             {
