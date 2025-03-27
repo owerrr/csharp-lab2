@@ -3,9 +3,6 @@
 ## UnitTest Phone
 - [Source code](./UnitTests-Phone)
 - [Źródło](https://github.com/WSEI-csharp202/UnitTests-Phone)
-## Cw2
-- [Source code](./cw2)
-- [Źrodło](https://github.com/WSEI-csharp202/Implementacja-IEquatable-IComparable-IComparer)
 ## Konto w banku
 - [Source code](./Konto-w-banku)
 - [Źródło](https://github.com/WSEI-csharp202/Konto-w-banku)
@@ -14,3 +11,10 @@
 ## Pudelko
 - [Source code](./Pudelko)
 - [Źródło](https://github.com/WSEI-csharp202/Pudelko)
+
+# Ćwiczenia
+## Implementacja interfejsów IEquatable, IComparable, IComparer
+- [Source code](./cw2)
+- [Źrodło](https://github.com/WSEI-csharp202/Implementacja-IEquatable-IComparable-IComparer)
+## Metody rozszerzajace
+- [Source code](./Metody-Rozszerzajace)
