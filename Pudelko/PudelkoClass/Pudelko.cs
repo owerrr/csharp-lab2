@@ -11,38 +11,36 @@ namespace PudelkoLibrary
     }
     public sealed class Pudelko : IEquatable<Pudelko>, IEnumerable<double>
     {
-        //private UnitOfMeasure _unitOfMeasure{get;set;}
-        //public UnitOfMeasure unitOfMeasure { get => _unitOfMeasure; set => _unitOfMeasure = value; }
-        private double x { get; set; }
-        public double A { 
-            get => Math.Round(x, 3);
-            set{
-                if (value > 10 || value < 0)
-                    throw new ArgumentOutOfRangeException("Invalid data!");
-                x = value;
-            }
-        }
-        private double y { get; set; }
-        public double B
+        private readonly double x;
+        public double A => x;
+        private readonly double y;
+        public double B => y;
+        private readonly double z;
+        public double C => z;
+
+        public Pudelko(double? a = null, double? b = null, double? c = null, UnitOfMeasure unit = UnitOfMeasure.meter)
         {
-            get => y;
-            set
-            {
-                if (value > 10 || value < 0)
-                    throw new ArgumentOutOfRangeException("Invalid data!");
-                y = value;
-            }
-        }
-        private double z { get; set; }
-        public double C
-        {
-            get => z;
-            set
-            {
-                if (value > 10 || value < 0)
-                    throw new ArgumentOutOfRangeException("Invalid data!");
-                z = value;
-            }
+            int converter = (int)unit;
+
+            if (a is null)
+                x = 0.1d;
+            else
+                x = Math.Floor((double)a / converter * 1000) / 1000;
+
+            if (b is null)
+                y = 0.1d;
+            else
+                y = Math.Floor((double)b / converter * 1000) / 1000;
+
+            if (c is null)
+                z = 0.1d;
+            else
+                z = Math.Floor((double)c / converter * 1000) / 1000;
+
+            if (x > 10 || x <= 0
+              || y > 10 || y <= 0
+              || z > 10 || z <= 0)
+                throw new ArgumentOutOfRangeException();
         }
 
         public double Objetosc
@@ -54,62 +52,42 @@ namespace PudelkoLibrary
             get => Math.Round(2 * A * B + 2 * B * C + 2 * A * C , 6);
         }
 
-        public Pudelko(double? a, double? b, double? c, UnitOfMeasure unitOfMeasure = UnitOfMeasure.meter) 
-        {
-            int converter = (int)unitOfMeasure;
-            //this.unitOfMeasure = unitOfMeasure;
-
-            if (a is null)
-                A = 0.1f;
-            else
-                A = (double)a / converter;
-
-            if (b is null)
-                B = 0.1f;
-            else
-                B = (double)b / converter;
-
-            if (c is null)
-                C = 0.1f;
-            else
-                C = (double)c / converter;
-
-        }
-
         public override string ToString()
         {
-            return $"{A} m × {B} m × {C} m";
+            return $"{A.ToString("F3", CultureInfo.InvariantCulture)} m × {B.ToString("F3", CultureInfo.InvariantCulture)} m × {C.ToString("F3", CultureInfo.InvariantCulture)} m";
         }
-        
+
         public string ToString(string format)
         {
-            if (format != "m" && format != "cm" && format != "mm") throw new ArgumentException("invalid format!");
+            if (format is null) format = "m";
+            if (format != "m" && format != "cm" && format != "mm") throw new FormatException("invalid format!");
 
             int converter = (int)UnitOfMeasure.meter;
-            double _a = A;
-            double _b = B;
-            double _c = C;
+            double _a = Math.Floor(A * converter * 1000) / 1000;
+            double _b = Math.Floor(B * converter * 1000) / 1000;
+            double _c = Math.Floor(C * converter * 1000) / 1000;
 
             if (format == "cm")
             {
                 converter = (int)UnitOfMeasure.centimeter;
-                _a = Math.Round(_a * converter, 1);
-                _b = Math.Round(_b * converter, 1);
-                _c = Math.Round(_c * converter, 1);
+                _a = Math.Floor(A * converter * 10) / 10;
+                _b = Math.Floor(B * converter * 10) / 10;
+                _c = Math.Floor(C * converter * 10) / 10;
+
+                return $"{_a.ToString("F1", CultureInfo.InvariantCulture)} {format} × {_b.ToString("F1", CultureInfo.InvariantCulture)} {format} × {_c.ToString("F1", CultureInfo.InvariantCulture)} {format}";
             }
             else if (format == "mm")
             {
                 converter = (int)UnitOfMeasure.milimeter;
-                _a = Math.Floor(_a * converter);
-                _b = Math.Floor(_b * converter);
-                _c = Math.Floor(_c * converter);
+                _a = Math.Floor(A * converter);
+                _b = Math.Floor(B * converter);
+                _c = Math.Floor(C * converter);
+                return $"{_a.ToString(CultureInfo.InvariantCulture)} {format} × {_b.ToString(CultureInfo.InvariantCulture)} {format} × {_c.ToString(CultureInfo.InvariantCulture)} {format}";
             }
 
             double[] values = { _a, _b, _c };
 
-
-
-            return $"{values[0]} {format} × {values[1]} {format} × {values[2]} {format}";
+            return $"{values[0].ToString("F3", CultureInfo.InvariantCulture)} {format} × {values[1].ToString("F3", CultureInfo.InvariantCulture)} {format} × {values[2].ToString("F3", CultureInfo.InvariantCulture)} {format}";
         }
 
         public static bool Equals(Pudelko p1, Pudelko p2)
@@ -145,7 +123,7 @@ namespace PudelkoLibrary
 
         public static bool operator !=(Pudelko p1, Pudelko p2)
         {
-            return Equals(p1, p2);
+            return !Equals(p1, p2);
         }
 
         public double this[int idx]
@@ -204,14 +182,6 @@ namespace PudelkoLibrary
 
         public static Pudelko operator+(Pudelko p1, Pudelko p2)
         {
-            //double[] data = new double[3];
-
-            //data[0] = p1.A > p2.A ? p1.A : p2.A;
-            //data[1] = p1.B > p2.B ? p1.B : p2.B;
-            //data[2] = p1.C > p2.C ? p1.C : p2.C;
-
-            //return new Pudelko(data[0], data[1], data[2], UnitOfMeasure.meter);
-
             return new Pudelko(p1.A + p2.A, p1.B + p2.B, p1.C + p2.C, UnitOfMeasure.meter);
         }
 
@@ -222,7 +192,7 @@ namespace PudelkoLibrary
 
         public static implicit operator Pudelko(ValueTuple<int,int,int> val)
         {
-            return new Pudelko(val.Item1 / (int)UnitOfMeasure.milimeter, val.Item2 / (int)UnitOfMeasure.milimeter, val.Item3 / (int)UnitOfMeasure.milimeter);
+            return new Pudelko(val.Item1 / (double)UnitOfMeasure.milimeter, val.Item2 / (double)UnitOfMeasure.milimeter, val.Item3 / (double)UnitOfMeasure.milimeter);
         }
     }
 }

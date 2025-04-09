@@ -450,14 +450,69 @@ namespace PudelkoUnitTests
         // ToDo
 
         #endregion
+        [DataTestMethod, TestCategory("Objetosc")]
+        [DataRow(2.5411d, 9.321455d, 0.001d, 0.023684661d)]
+        [DataRow(2.5d, 9.321d, 0.1d, 2.33025d)]
+        [DataRow(5d, 2d, 1d, 10d)]
+        [DataRow(3.45d, 2.16d, 4d, 29.808d)]
+        public void Method_Objetosc_Valid_Params(double a, double b, double c, double expectedResult)
+        {
+            var p = new Pudelko(a, b, c);
+            Assert.AreEqual(p.Objetosc, expectedResult);
+        }
+
+        [DataTestMethod, TestCategory("Pole")]
+        [DataRow(2.5d, 9.321d, 0.1d, 48.9692d)]
+        [DataRow(5d, 2d, 1d, 34d)]
+        [DataRow(3.45d, 2.16d, 4d, 59.784d)]
+        public void Method_Pole_Valid_Params(double a, double b, double c, double expectedResult)
+        {
+            var p = new Pudelko(a, b, c);
+            Assert.AreEqual(p.Pole, expectedResult);
+        }
 
         #region Equals ===========================================
         // ToDo
         #endregion
+        [DataTestMethod, TestCategory("Equals")]
+        [DataRow(2.5d, 2d, 2.5d, 2d, 2.5d, 2.5d, true)]
+        [DataRow(1d, 1.5d, 2d, 2d, 1.5d, 1d, true)]
+        [DataRow(1.5d, 2d, 2.5d, 5d, 2.5d, 2.5d, false)]
+        [DataRow(2.5d, 2d, 2.5d, 5d, 4.5d, 2.5d, false)]
+        public void Mehtod_Equals(double a, double b, double c, double a2, double b2, double c2, bool expectedResult)
+        {
+            var p = new Pudelko(a, b, c);
+            var p2 = new Pudelko(a2, b2, c2);
+            Assert.AreEqual((Pudelko.Equals(p, p2)), expectedResult);
+        }
 
         #region Operators overloading ===========================
         // ToDo
         #endregion
+        [DataTestMethod, TestCategory("Operator Equals")]
+        [DataRow(2.5d, 2d, 2.5d, 2d, 2.5d, 2.5d, true)]
+        [DataRow(1d, 1.5d, 2d, 2d, 1.5d, 1d, true)]
+        [DataRow(1.5d, 2d, 2.5d, 5d, 2.5d, 2.5d, false)]
+        [DataRow(2.5d, 2d, 2.5d, 5d, 4.5d, 2.5d, false)]
+        public void Operator_Equals(double a, double b, double c, double a2, double b2, double c2, bool expectedResult)
+        {
+            var p = new Pudelko(a, b, c);
+            var p2 = new Pudelko(a2, b2, c2);
+            Assert.AreEqual((p == p2), expectedResult);
+        }
+
+        [DataTestMethod, TestCategory("Operator Addition")]
+        [DataRow(2.5d, 2d, 2.5d, 2d, 2.5d, 2.5d, 4.5d, 4.5d, 5d)]
+        [DataRow(1d, 1.5d, 2d, 2d, 1.5d, 1d, 3d, 3d, 3d)]
+        [DataRow(1.5d, 2d, 2.5d, 5d, 2.5d, 2.5d, 6.5d, 4.5d, 5d)]
+        [DataRow(2.5d, 2d, 2.5d, 5d, 4.5d, 2.5d, 7.5d, 6.5d, 5d)]
+        public void Operator_Addition(double a, double b, double c, double a2, double b2, double c2, double expA, double expB, double expC)
+        {
+            var p = new Pudelko(a, b, c);
+            var p2 = new Pudelko(a2, b2, c2);
+            var expectedResult = new Pudelko(expA, expB, expC);
+            Assert.AreEqual((p + p2), expectedResult);
+        }
 
         #region Conversions =====================================
         [TestMethod]
