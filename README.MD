@@ -18,3 +18,5 @@
 - [Źrodło](https://github.com/WSEI-csharp202/Implementacja-IEquatable-IComparable-IComparer)
 ## Metody rozszerzajace
 - [Source code](./Metody-Rozszerzajace)
+## BitMatrix
+- [Source code](./BitMatrix)
