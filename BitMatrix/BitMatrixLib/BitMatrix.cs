@@ -275,5 +275,150 @@ namespace BitMatrixLib
             if (ReferenceEquals(input, null)) throw new NullReferenceException();
             return new BitArray(input.data);
         }
+
+        public BitMatrix And(BitMatrix bm)
+        {
+            if (ReferenceEquals(this, null) || ReferenceEquals(bm, null)) throw new ArgumentNullException();
+            if (NumberOfRows != bm.NumberOfRows || NumberOfColumns != bm.NumberOfColumns) throw new ArgumentException();
+
+            for(int i = 0; i < NumberOfRows; i++)
+            {
+                for(int j = 0; j < NumberOfColumns; j++)
+                {
+                    if (data[i*NumberOfColumns+j] && bm.data[i * NumberOfColumns + j])
+                        data[i * NumberOfColumns + j] = true;
+                    else
+                        data[i * NumberOfColumns + j] = false;
+                }   
+            }
+
+            return this;
+        }
+
+        public BitMatrix Or(BitMatrix bm)
+        {
+            if (ReferenceEquals(this, null) || ReferenceEquals(bm, null)) throw new ArgumentNullException();
+            if (NumberOfRows != bm.NumberOfRows || NumberOfColumns != bm.NumberOfColumns) throw new ArgumentException();
+
+            for (int i = 0; i < NumberOfRows; i++)
+            {
+                for (int j = 0; j < NumberOfColumns; j++)
+                {
+                    if (data[i * NumberOfColumns + j] || bm.data[i * NumberOfColumns + j])
+                        data[i * NumberOfColumns + j] = true;
+                    else
+                        data[i * NumberOfColumns + j] = false;
+                }
+            }
+
+            return this;
+        }
+
+        public BitMatrix Xor(BitMatrix bm)
+        {
+            if (ReferenceEquals(this, null) || ReferenceEquals(bm, null)) throw new ArgumentNullException();
+            if (NumberOfRows != bm.NumberOfRows || NumberOfColumns != bm.NumberOfColumns) throw new ArgumentException();
+
+            for (int i = 0; i < NumberOfRows; i++)
+            {
+                for (int j = 0; j < NumberOfColumns; j++)
+                {
+                    if (data[i * NumberOfColumns + j] != bm.data[i * NumberOfColumns + j] && (data[i * NumberOfColumns + j] || bm.data[i * NumberOfColumns + j]))
+                        data[i * NumberOfColumns + j] = true;
+                    else
+                        data[i * NumberOfColumns + j] = false;
+                }
+            }
+
+            return this;
+        }
+
+        public BitMatrix Not()
+        {
+            for (int i = 0; i < NumberOfRows; i++)
+            {
+                for (int j = 0; j < NumberOfColumns; j++)
+                {
+                    if (!data[i * NumberOfColumns + j])
+                        data[i * NumberOfColumns + j] = true;
+                    else
+                        data[i * NumberOfColumns + j] = false;
+                }
+            }
+
+            return this;
+        }
+
+        public static BitMatrix operator&(BitMatrix b1, BitMatrix b2)
+        {
+            if (ReferenceEquals(b1, null) || ReferenceEquals(b2, null)) throw new ArgumentNullException();
+            if (b1.NumberOfRows != b2.NumberOfRows || b1.NumberOfColumns != b2.NumberOfColumns) throw new ArgumentException();
+            bool[,] newData = new bool[b1.NumberOfRows, b1.NumberOfColumns];
+            for (int i = 0; i < b1.NumberOfRows; i++)
+            {
+                for (int j = 0; j < b1.NumberOfColumns; j++)
+                {
+                    if (b1.data[i * b1.NumberOfColumns + j] && b2.data[i * b1.NumberOfColumns + j])
+                        newData[i,j] = true;
+                    else
+                        newData[i,j] = false;
+                }
+            }
+
+            return new BitMatrix(newData);
+        }
+        public static BitMatrix operator|(BitMatrix b1, BitMatrix b2)
+        {
+            if (ReferenceEquals(b1, null) || ReferenceEquals(b2, null)) throw new ArgumentNullException();
+            if (b1.NumberOfRows != b2.NumberOfRows || b1.NumberOfColumns != b2.NumberOfColumns) throw new ArgumentException();
+            bool[,] newData = new bool[b1.NumberOfRows, b1.NumberOfColumns];
+            for (int i = 0; i < b1.NumberOfRows; i++)
+            {
+                for (int j = 0; j < b1.NumberOfColumns; j++)
+                {
+                    if (b1.data[i * b1.NumberOfColumns + j] || b2.data[i * b1.NumberOfColumns + j])
+                        newData[i, j] = true;
+                    else
+                        newData[i, j] = false;
+                }
+            }
+
+            return new BitMatrix(newData);
+        }
+        public static BitMatrix operator^(BitMatrix b1, BitMatrix b2)
+        {
+            if (ReferenceEquals(b1, null) || ReferenceEquals(b2, null)) throw new ArgumentNullException();
+            if (b1.NumberOfRows != b2.NumberOfRows || b1.NumberOfColumns != b2.NumberOfColumns) throw new ArgumentException();
+            bool[,] newData = new bool[b1.NumberOfRows, b1.NumberOfColumns];
+            for (int i = 0; i < b1.NumberOfRows; i++)
+            {
+                for (int j = 0; j < b1.NumberOfColumns; j++)
+                {
+                    if (b1.data[i * b1.NumberOfColumns + j] != b2.data[i * b1.NumberOfColumns + j] && (b1.data[i * b1.NumberOfColumns + j] || b2.data[i * b1.NumberOfColumns + j]))
+                        newData[i, j] = true;
+                    else
+                        newData[i, j] = false;
+                }
+            }
+
+            return new BitMatrix(newData);
+        }
+        public static BitMatrix operator!(BitMatrix b1)
+        {
+            if (ReferenceEquals(b1, null)) throw new ArgumentNullException();
+            bool[,] newData = new bool[b1.NumberOfRows, b1.NumberOfColumns];
+            for (int i = 0; i < b1.NumberOfRows; i++)
+            {
+                for (int j = 0; j < b1.NumberOfColumns; j++)
+                {
+                    if (!b1.data[i * b1.NumberOfColumns + j])
+                        newData[i,j] = true;
+                    else
+                        newData[i, j] = false;
+                }
+            }
+
+            return new BitMatrix(newData);
+        }
     }
 }
