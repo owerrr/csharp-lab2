@@ -16,6 +16,7 @@
 - [Źródło](https://github.com/WSEI-csharp202/TempElementsFramework)
 
 # Ćwiczenia
+
 ## Implementacja interfejsów IEquatable, IComparable, IComparer
 - [Source code](./cw2)
 - [Źrodło](https://github.com/WSEI-csharp202/Implementacja-IEquatable-IComparable-IComparer)
@@ -23,3 +24,8 @@
 - [Source code](./Metody-Rozszerzajace)
 ## BitMatrix
 - [Source code](./BitMatrix)
+
+# Projekty
+
+## WPF-Projekt
+- [Source code](./WPF-Projekt)
