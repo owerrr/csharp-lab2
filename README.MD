@@ -11,6 +11,9 @@
 ## Pudelko
 - [Source code](./Pudelko)
 - [Źródło](https://github.com/WSEI-csharp202/Pudelko)
+## TempElementsFramework
+- [Source code](./TempElementsFramework)
+- [Źródło](https://github.com/WSEI-csharp202/TempElementsFramework)
 
 # Ćwiczenia
 ## Implementacja interfejsów IEquatable, IComparable, IComparer
