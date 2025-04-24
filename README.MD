@@ -14,6 +14,8 @@
 ## TempElementsFramework
 - [Source code](./TempElementsFramework)
 - [Źródło](https://github.com/WSEI-csharp202/TempElementsFramework)
+## WPF chmod konwerter
+- [Source code](./WPF-chmod-konwerter)
 
 # Ćwiczenia
 
