@@ -5,6 +5,7 @@ namespace ChmodConverterLib
     {
         public static int SymbolicToNumeric(string input)
         {
+            if (input.Length % 3 != 0) throw new ArgumentException("Invalid syntax!");
             int res = 0;
             int count = 0;
             foreach (char c in input)
@@ -43,7 +44,9 @@ namespace ChmodConverterLib
             // 7 7 7
             while(temp > 0)
             {
-                ints.Add(temp % 10);
+                int num = temp % 10;
+                if (num > 7 || num < 0) throw new ArgumentException("Invalid syntax!");
+                ints.Add(num);
                 temp /= 10;
             }
             ints.Reverse();
@@ -54,24 +57,19 @@ namespace ChmodConverterLib
                     res += "r";
                     ints[i] -= 4;
                 }
-                else if (ints[i] >= 2 && ints[i] < 4)
+                if (ints[i] >= 2)
                 {
                     res += "w";
                     ints[i] -= 2;
                 }
-                else if (ints[i] == 1)
+                if (ints[i] == 1)
                 {
                     res += "x";
                     ints[i] -= 1;
                 }
-                else if(ints[i] == 0)
+                else
                 {
                     res += "-";
-                }
-
-                if (ints[i] > 0)
-                {
-                    i -= 1;
                 }
             }
 
