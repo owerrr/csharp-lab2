@@ -1,0 +1,64 @@
+﻿@{
+    ViewData["Title"] = "Konwerter chmod";
+}
+
+<div class="text-center">
+    <form asp-controller="Home" asp-action="Index" method="post">
+        <div class="form-group mb-3 row justify-content-md-center">
+            <label for="conversion_type" class="col-sm-2 col-form-label">Typ konwersji</label>
+            <div class="col-sm-4">
+                <select class="form-select" onchange="changeConverterText()" id="conversion_type" name="conversion_type">
+                    <option selected value="Symbolic">Numeryczny na symboliczny</option>
+                    <option value="Numeric">Symboliczny na numeryczny</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group mb-3 row justify-content-md-center">
+            <label for="conversion_data" class="col-sm-2 col-form-label" id="label_input_data">Podaj typ numeryczny</label>
+            <div class="col-sm-4">
+                <input type="number" pattern="[0-7]+" id="conversion_data" name="conversion_data" class="form-control" required/>
+            </div>
+        </div>
+        <div class="form-group mb-3 row justify-content-md-center">
+            <input type="submit" value="Konwertuj" class="btn btn-success col-sm-3 m-2" />
+            <input type="reset" value="Wyczysc" class="btn btn-danger col-sm-3 m-2" />
+        </div>
+    </form>
+
+    @if(!string.IsNullOrEmpty(ViewBag.FormData as string))
+    {
+        <h1>@ViewBag.FormData</h1>
+    }    
+</div>
+
+@{
+    <script defer>
+        function changeConverterText(){
+        var value = document.querySelector("#conversion_type").value;
+        if(value == "Numeric"){
+            document.querySelector("#label_input_data").innerHTML = "Podaj typ symboliczny";
+            document.querySelector("#conversion_data").setAttribute("type", "text");
+            document.querySelector("#conversion_data").setAttribute("pattern", "[rwx-]+");
+            }
+            else{
+            document.querySelector("#label_input_data").innerHTML = "Podaj typ numeryczny";
+            document.querySelector("#conversion_data").setAttribute("type", "number");
+            document.querySelector("#conversion_data").setAttribute("pattern", "[0-7]+");
+        }
+        }
+    </script>
+}
+
+@if(!string.IsNullOrEmpty(ViewBag.FormOverwriteData as string))
+{
+    <script defer>
+        window.onload = ()=>{
+            var data = "@ViewBag.FormOverwriteData".split('|');
+            document.querySelector("#conversion_type").value = data[0];
+
+            changeConverterText();
+
+            document.querySelector("#conversion_data").value = data[1];
+        }
+    </script>
+}
