@@ -13,25 +13,25 @@
                 <TextBox HorizontalAlignment="Left" Margin="108,0,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="56" Name="TxtBox_Numeric"/>
                 <TextBox HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="114" Margin="169,0,0,0" Name="TxtBox_Symbolic"/>
             </Grid>
-            <Grid Margin="10,67,111,67" Background="#111222">
+            <Grid Margin="10,67,10,67" Background="#111222">
                 <Label Content="Read" HorizontalAlignment="Left" Margin="4,33,0,0" VerticalAlignment="Top" Foreground="white"/>
                 <Label Content="Write" HorizontalAlignment="Left" Margin="4,59,0,0" VerticalAlignment="Top" Foreground="white"/>
                 <Label Content="Execute" HorizontalAlignment="Left" Margin="4,85,0,0" VerticalAlignment="Top" Foreground="white"/>
 
-                <Grid Margin="60,0,162,10">
-                    <Label Content="Owner" HorizontalAlignment="Stretch" VerticalAlignment="Top" Foreground="white"/>
+                <Grid Margin="60,0,214,10">
+                    <Label Content="Owner" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="white"/>
                     <CheckBox Content="" HorizontalAlignment="Center" Margin="0,39,0,0" VerticalAlignment="Top" Name="Cb_Read_Owner" Checked="FixCheckboxes" Unchecked="FixCheckboxes"/>
                     <CheckBox Content="" HorizontalAlignment="Center" Margin="0,66,0,0" VerticalAlignment="Top" Name="Cb_Write_Owner" Checked="FixCheckboxes" Unchecked="FixCheckboxes"/>
                     <CheckBox Content="" HorizontalAlignment="Center" Margin="0,93,0,0" VerticalAlignment="Top" Name="Cb_Execute_Owner" Checked="FixCheckboxes" Unchecked="FixCheckboxes"/>
                 </Grid>
-                <Grid Margin="111,0,111,10">
-                    <Label Content="Group" HorizontalAlignment="Stretch" VerticalAlignment="Top" Foreground="white"/>
+                <Grid Margin="160,0,114,10">
+                    <Label Content="Group" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="white"/>
                     <CheckBox Content="" HorizontalAlignment="Center" Margin="0,39,0,0" VerticalAlignment="Top" Name="Cb_Read_Group" Checked="FixCheckboxes" Unchecked="FixCheckboxes"/>
                     <CheckBox Content="" HorizontalAlignment="Center" Margin="0,66,0,0" VerticalAlignment="Top" Name="Cb_Write_Group" Checked="FixCheckboxes" Unchecked="FixCheckboxes"/>
                     <CheckBox Content="" HorizontalAlignment="Center" Margin="0,93,0,0" VerticalAlignment="Top" Name="Cb_Execute_Group" Checked="FixCheckboxes" Unchecked="FixCheckboxes"/>
                 </Grid>
-                <Grid Margin="162,0,60,10">
-                    <Label Content="Owner" HorizontalAlignment="Stretch" VerticalAlignment="Top" Foreground="white"/>
+                <Grid Margin="265,0,9,10">
+                    <Label Content="Other" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="white"/>
                     <CheckBox Content="" HorizontalAlignment="Center" Margin="0,39,0,0" VerticalAlignment="Top" Name="Cb_Read_Other" Checked="FixCheckboxes" Unchecked="FixCheckboxes"/>
                     <CheckBox Content="" HorizontalAlignment="Center" Margin="0,66,0,0" VerticalAlignment="Top" Name="Cb_Write_Other" Checked="FixCheckboxes" Unchecked="FixCheckboxes"/>
                     <CheckBox Content="" HorizontalAlignment="Center" Margin="0,93,0,0" VerticalAlignment="Top" Name="Cb_Execute_Other" Checked="FixCheckboxes" Unchecked="FixCheckboxes"/>
