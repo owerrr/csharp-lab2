@@ -28,7 +28,7 @@ namespace WebApp1.Controllers
                 {
                     if (conversion_type == "Symbolic")
                     {
-                        data = ChmodConverter.NumericToSymbolic(Convert.ToInt32(conversion_data));
+                        data = ChmodConverter.NumericToSymbolic(conversion_data);
                     }
                     else
                     {

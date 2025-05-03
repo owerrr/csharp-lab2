@@ -36,7 +36,7 @@ public partial class MainWindow : Window
         };
     }
 
-    private int numericValue { get; set; }
+    private string numericValue { get; set; }
     private string symbolicValue { get; set; }
     private int[] values = new int[3];
 
@@ -75,7 +75,14 @@ public partial class MainWindow : Window
             }
         }
 
-        numericValue = values[0]*100 + values[1]*10 + values[2];
+        var numVal = values[0]*100 + values[1]*10 + values[2];
+        if (numVal < 10)
+            numericValue = "00" + numVal.ToString();
+        else if (numVal < 100)
+            numericValue = "0"+numVal.ToString();
+        else
+            numericValue = numVal.ToString();
+
         symbolicValue = ChmodConverter.NumericToSymbolic(numericValue);
 
         UpdateTextBoxes();
@@ -86,7 +93,7 @@ public partial class MainWindow : Window
         TextBox numericTxtBox = TxtBox_Numeric;
         TextBox symbolicTxtBox = TxtBox_Symbolic;
 
-        numericTxtBox.Text = numericValue.ToString();
+        numericTxtBox.Text = numericValue;
         symbolicTxtBox.Text = symbolicValue;
     }
 }

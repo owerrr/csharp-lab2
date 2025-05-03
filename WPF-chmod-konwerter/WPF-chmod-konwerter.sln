@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp1", "WebApp1\WebApp1.csproj", "{E37156DF-50F2-4E80-92B4-46ACFB208FF8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChmodLibTests", "ChmodLibTests\ChmodLibTests.csproj", "{77C4E4CC-06ED-4BF3-801B-5570234FCC54}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{E37156DF-50F2-4E80-92B4-46ACFB208FF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E37156DF-50F2-4E80-92B4-46ACFB208FF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E37156DF-50F2-4E80-92B4-46ACFB208FF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77C4E4CC-06ED-4BF3-801B-5570234FCC54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77C4E4CC-06ED-4BF3-801B-5570234FCC54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77C4E4CC-06ED-4BF3-801B-5570234FCC54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77C4E4CC-06ED-4BF3-801B-5570234FCC54}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

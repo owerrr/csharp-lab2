@@ -16,7 +16,7 @@ namespace ConsoleApp1
                 try
                 {
                     if (Char.IsDigit(ans[0]))
-                        Console.WriteLine($"ans = {ChmodConverter.NumericToSymbolic(Int32.Parse(ans))}");
+                        Console.WriteLine($"ans = {ChmodConverter.NumericToSymbolic(ans)}");
                     else
                         Console.WriteLine($"ans = {ChmodConverter.SymbolicToNumeric(ans)}");
                 }
