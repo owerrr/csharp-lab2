@@ -1,7 +1,7 @@
 ﻿
 namespace ChmodConverterLib
 {
-    public class ChmodConverter
+    public static class ChmodConverter
     {
         public static string SymbolicToNumeric(string input)
         {

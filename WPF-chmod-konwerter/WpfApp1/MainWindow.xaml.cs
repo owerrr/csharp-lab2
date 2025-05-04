@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.ComponentModel;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -15,85 +16,231 @@ namespace WpfApp1;
 /// <summary>
 /// Interaction logic for MainWindow.xaml
 /// </summary>
-public partial class MainWindow : Window
-{
-    public MainWindow()
+/// 
+public class PermissionsViewModel : INotifyPropertyChanged {
+    private string _numericValue = "000";
+    private string _symbolicValue = "---------";
+
+    private bool _isReadOwner;
+    private bool _isWriteOwner;
+    private bool _isExecuteOwner;
+    private bool _isReadGroup;
+    private bool _isWriteGroup;
+    private bool _isExecuteGroup;
+    private bool _isReadOther;
+    private bool _isWriteOther;
+    private bool _isExecuteOther;
+
+    private string _errorMessage;
+
+    private bool IsUpdating = false;
+
+    public bool IsReadOwner
     {
-        InitializeComponent();
-        checkBoxes = new CheckBox[]
+        get => _isReadOwner;
+        set
         {
-            Cb_Read_Owner,
-            Cb_Write_Owner,
-            Cb_Execute_Owner,
-
-            Cb_Read_Group,
-            Cb_Write_Group,
-            Cb_Execute_Group,
-
-            Cb_Read_Other,
-            Cb_Write_Other,
-            Cb_Execute_Other
-        };
+            _isReadOwner = value;
+            OnPropertyChanged(nameof(IsReadOwner));
+            UpdateSymbolicPermsCb();
+        }
+    }
+    public bool IsWriteOwner
+    {
+        get => _isWriteOwner;
+        set
+        {
+            _isWriteOwner = value;
+            OnPropertyChanged(nameof(IsWriteOwner));
+            UpdateSymbolicPermsCb();
+        }
+    }
+    public bool IsExecuteOwner
+    {
+        get => _isExecuteOwner;
+        set
+        {
+            _isExecuteOwner = value;
+            OnPropertyChanged(nameof(IsExecuteOwner));
+            UpdateSymbolicPermsCb();
+        }
+    }
+    public bool IsReadGroup
+    {
+        get => _isReadGroup;
+        set
+        {
+            _isReadGroup = value;
+            OnPropertyChanged(nameof(IsReadGroup));
+            UpdateSymbolicPermsCb();
+        }
+    }
+    public bool IsWriteGroup
+    {
+        get => _isWriteGroup;
+        set
+        {
+            _isWriteGroup = value;
+            OnPropertyChanged(nameof(IsWriteGroup));
+            UpdateSymbolicPermsCb();
+        }
+    }
+    public bool IsExecuteGroup
+    {
+        get => _isExecuteGroup;
+        set
+        {
+            _isExecuteGroup = value;
+            OnPropertyChanged(nameof(IsExecuteGroup));
+            UpdateSymbolicPermsCb();
+        }
+    }
+    public bool IsReadOther
+    {
+        get => _isReadOther;
+        set
+        {
+            _isReadOther = value;
+            OnPropertyChanged(nameof(IsReadOther));
+            UpdateSymbolicPermsCb();
+        }
+    }
+    public bool IsWriteOther
+    {
+        get => _isWriteOther;
+        set
+        {
+            _isWriteOther = value;
+            OnPropertyChanged(nameof(IsWriteOther));
+            UpdateSymbolicPermsCb();
+        }
+    }
+    public bool IsExecuteOther
+    {
+        get => _isExecuteOther;
+        set
+        {
+            _isExecuteOther = value;
+            OnPropertyChanged(nameof(IsExecuteOther));
+            UpdateSymbolicPermsCb();
+        }
     }
 
-    private string numericValue { get; set; }
-    private string symbolicValue { get; set; }
-    private int[] values = new int[3];
+    public event PropertyChangedEventHandler PropertyChanged;
 
-    private CheckBox[] checkBoxes;
-
-    private void FixCheckboxes(object sender, RoutedEventArgs e)
+    public string NumericValue
     {
-        string name = (e.Source as FrameworkElement).Name.ToString();
-        bool? isChecked = (e.Source as CheckBox).IsChecked;
-        //MessageBox.Show($"{name} : {isChecked}");
-        values = new int[3];
-        int idx = 0;
-        foreach(CheckBox cb in checkBoxes)
+        get => _numericValue;
+        set
         {
-            if ((bool)cb.IsChecked)
+            if(_numericValue != value)
             {
-                if (cb.Name.EndsWith("Owner"))
-                    idx = 0;
-                else if (cb.Name.EndsWith("Group"))
-                    idx = 1;
-                else if (cb.Name.EndsWith("Other"))
-                    idx = 2;
-
-                if (cb.Name.Contains("Read"))
+                _numericValue = value;
+                OnPropertyChanged(nameof(NumericValue));
+                try
                 {
-                    values[idx] += 4;
+                    SymbolicValue = ChmodConverter.NumericToSymbolic(NumericValue);
+                    UpdateCheckBoxes();
+                    ErrorMessage = "";
                 }
-                else if (cb.Name.Contains("Write"))
+                catch(ArgumentException ex)
                 {
-                    values[idx] += 2;
-                }
-                else if (cb.Name.Contains("Execute"))
-                {
-                    values[idx] += 1;
+                    ErrorMessage = ex.Message;
                 }
             }
         }
-
-        var numVal = values[0]*100 + values[1]*10 + values[2];
-        if (numVal < 10)
-            numericValue = "00" + numVal.ToString();
-        else if (numVal < 100)
-            numericValue = "0"+numVal.ToString();
-        else
-            numericValue = numVal.ToString();
-
-        symbolicValue = ChmodConverter.NumericToSymbolic(numericValue);
-
-        UpdateTextBoxes();
     }
 
-    private void UpdateTextBoxes()
+    public string SymbolicValue
     {
-        TextBox numericTxtBox = TxtBox_Numeric;
-        TextBox symbolicTxtBox = TxtBox_Symbolic;
+        get => _symbolicValue;
+        set
+        {
+            if (_symbolicValue != value)
+            {
+                _symbolicValue = value;
+                OnPropertyChanged(nameof(SymbolicValue));
+                try
+                {
+                    NumericValue = ChmodConverter.SymbolicToNumeric(SymbolicValue);
+                    ErrorMessage = "";
+                }
+                catch(ArgumentException ex){
+                    ErrorMessage = ex.Message;
+                }
+            }
+        }
+    }
 
-        numericTxtBox.Text = numericValue;
-        symbolicTxtBox.Text = symbolicValue;
+    public string ErrorMessage
+    {
+        get => _errorMessage;
+        set
+        {
+            _errorMessage = value;
+            OnPropertyChanged(nameof(ErrorMessage));
+        }
+    }
+
+    private void UpdateSymbolicPermsCb()
+    {
+        if (IsUpdating) return;
+        IsUpdating = true;
+        string symbolic = "";
+        symbolic += IsReadOwner ? 'r' : '-';
+        symbolic += IsWriteOwner ? 'w' : '-';
+        symbolic += IsExecuteOwner ? 'x' : '-';
+
+        symbolic += IsReadGroup ? 'r' : '-';
+        symbolic += IsWriteGroup ? 'w' : '-';
+        symbolic += IsExecuteGroup ? 'x' : '-';
+
+        symbolic += IsReadOther ? 'r' : '-';
+        symbolic += IsWriteOther ? 'w' : '-';
+        symbolic += IsExecuteOther ? 'x' : '-';
+        IsUpdating = false;
+        SymbolicValue = symbolic;
+    }
+
+    private void UpdateCheckBoxes()
+    {
+        if (string.IsNullOrEmpty(SymbolicValue) || SymbolicValue.Length != 9)
+            return;
+        if (IsUpdating) return;
+        IsUpdating = true;
+        IsReadOwner = SymbolicValue[0] == 'r';
+        IsWriteOwner = SymbolicValue[1] == 'w';
+        IsExecuteOwner = SymbolicValue[2] == 'x';
+
+        IsReadGroup = SymbolicValue[3] == 'r';
+        IsWriteGroup = SymbolicValue[4] == 'w';
+        IsExecuteGroup = SymbolicValue[5] == 'x';
+
+        IsReadOther = SymbolicValue[6] == 'r';
+        IsWriteOther = SymbolicValue[7] == 'w';
+        IsExecuteOther = SymbolicValue[8] == 'x';
+        IsUpdating = false;
+    }
+
+    protected virtual void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+}
+
+public partial class MainWindow : Window
+{
+    public PermissionsViewModel ViewModel { get; set; }
+    public MainWindow()
+    {
+        InitializeComponent();
+        ViewModel = new PermissionsViewModel();
+        DataContext = ViewModel;
+    }
+
+    private void Grid_LostFocus(object sender, MouseButtonEventArgs e)
+    {
+        Keyboard.ClearFocus();
+        FocusManager.SetFocusedElement(this, (UIElement)sender);
     }
 }
