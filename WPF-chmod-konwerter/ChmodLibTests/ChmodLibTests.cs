@@ -557,6 +557,22 @@ namespace ChmodLibTests
             }
         }
 
+        [DataTestMethod, TestCategory("Symbolic to Numeric")]
+        [DataRow("rwxrwxrws", "Invalid syntax! Symbol s is not valid! Valid symbols: r, w, x, -")]
+        [DataRow("awxrwxrwx", "Invalid syntax! Symbol a is not valid! Valid symbols: r, w, x, -")]
+        [DataRow("rbxrwxrwx", "Invalid syntax! Symbol b is not valid! Valid symbols: r, w, x, -")]
+        public void SymbolicToNumeric_Invalid_Letter(string input , string exceptionMessage)
+        {
+            try
+            {
+                var res = ChmodConverter.SymbolicToNumeric(input);
+            }
+            catch(ArgumentException ex)
+            {
+                Assert.AreEqual(ex.Message, exceptionMessage);
+            }
+        }
+
         [DataTestMethod, TestCategory("Numeric to Symbolic")]
         #region NumericToSymbolic_DataRow
         [DataRow("777", "rwxrwxrwx")]
@@ -1076,6 +1092,40 @@ namespace ChmodLibTests
         {
             string result = ChmodConverter.NumericToSymbolic(input);
             Assert.AreEqual(result, predicted);
+        }
+
+        [DataTestMethod, TestCategory("Numeric to Symbolic")]
+        [DataRow("7777")]
+        [DataRow("5")]
+        [DataRow("55")]
+        public void NumericToSymbolic_Invalid_Length(string input)
+        {
+            try
+            {
+                var res = ChmodConverter.NumericToSymbolic(input);
+            }
+            catch(ArgumentException ex)
+            {
+                string exception = $"Invalid syntax! Your input is {input.Length} length! Valid length is 3!";
+                Assert.AreEqual(ex.Message, exception);
+            }
+        }
+
+        [DataTestMethod, TestCategory("Numeric to Symbolic")]
+        [DataRow("877", "8")]
+        [DataRow("797", "9")]
+        [DataRow("7-7", "-")]
+        public void NumericToSymbolic_Invalid_NumberOutOfRange(string input, string invalidNumber)
+        {
+            try
+            {
+                var res = ChmodConverter.NumericToSymbolic(input);
+            }
+            catch(ArgumentException ex)
+            {
+
+                Assert.AreEqual(ex.Message, $"Invalid syntax! Number {invalidNumber} is out of range!");
+            }
         }
     }
 }
