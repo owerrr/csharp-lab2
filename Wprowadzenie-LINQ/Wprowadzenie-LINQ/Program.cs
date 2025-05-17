@@ -9,7 +9,10 @@
 
             //WithoutLINQ();
             //WithLINQ();
+            Console.WriteLine("\nZadanie 1:\n");
             Zadanie1();
+            Console.WriteLine("\nZadanie 2:\n");
+            Zadanie2();
         }
 
         private static void WithoutLINQ()
@@ -73,15 +76,12 @@
         private static void Zadanie1()
         {
             string s_input = "Krzysztof Molenda, 1965-11-20; Jan Kowalski, 1987-01-01; Anna Abacka, 1972-05-20; Józef Kabacki, 2000-01-02; Kazimierz Moksa, 2001-01-02";
-            DateTime date = DateTime.Now;
-            int year = date.Year;
-            int month = date.Month;
-            int day = date.Day;
 
             var q1 = s_input.Split(';', StringSplitOptions.RemoveEmptyEntries)
                      .Select(x => x.Trim().Split(",", StringSplitOptions.RemoveEmptyEntries))
                      .Select(x => (fullName: x[0].Split(' '), dateOfBirth: x[1]))
-                     .OrderBy(x => (DateTime.Now - new DateTime(x.dateOfBirth))
+                     .OrderBy(x => DateTime.Parse(x.dateOfBirth))
+                     .ThenBy(x => x.fullName[0])
                      .Select(x => $"{x.fullName[1]} {x.fullName[0]} {x.dateOfBirth}")
                      .ToList();
 
@@ -91,6 +91,54 @@
             }
             //var s_output = String.Join(", ", q1);
             //Console.WriteLine(s_output);
+
+            var q2 = (
+                            from p in s_input.Split(';', StringSplitOptions.RemoveEmptyEntries)
+                            let nameAndDate = p.Trim().Split(",", StringSplitOptions.RemoveEmptyEntries)
+                            let fullName = nameAndDate[0].Split(' ')
+                            let dateOfBirth = DateTime.Parse(nameAndDate[1])
+                            orderby dateOfBirth, fullName[0]
+                            select $"{fullName[1]} {fullName[0]} {dateOfBirth:yyyy-MM-dd}"
+                        ).ToList();
+
+            Console.WriteLine("\nw notacji query");
+            foreach (var p in q2)
+            {
+                Console.WriteLine(p);
+            }
+        }
+
+        private static void Zadanie2()
+        {
+            string s_input = "Krzysztof Molenda, Jan Kowalski,  Anna    Abacka, Józef Kabacki, Kazimierz Moksa,  Alfred Alacki, Test Test";
+
+            var q1 = s_input.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                            .Select(x => x.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries))
+                            .Select(x => (firstNameLetter: x[0][0], lastNameLetter: x[1][0]))
+                            .GroupBy(x => $"{x.firstNameLetter}{x.lastNameLetter}")
+                            .Where(x => x.Count() > 1)
+                            .Select(x => $"{x.Key} x{x.Count()}")
+                            .ToList();
+
+            foreach (var p in q1)
+            {
+                Console.WriteLine(p);
+            }
+
+            var q2 = (
+                            from p in s_input.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                            let name = p.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                            let letters = $"{name[0][0]}{name[1][0]}"
+                            group letters by letters into x
+                            where x.Count() > 1
+                            select $"{x.Key} x{x.Count()}"
+                        ).ToList();
+
+            Console.WriteLine("\nw notacji query");
+            foreach (var p in q2)
+            {
+                Console.WriteLine(p);
+            }
         }
     }
 }
