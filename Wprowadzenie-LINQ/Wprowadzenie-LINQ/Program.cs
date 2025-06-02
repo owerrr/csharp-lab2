@@ -9,10 +9,31 @@
 
             //WithoutLINQ();
             //WithLINQ();
-            Console.WriteLine("\nZadanie 1:\n");
-            Zadanie1();
-            Console.WriteLine("\nZadanie 2:\n");
-            Zadanie2();
+            //Console.WriteLine("\nZadanie 1:\n");
+            //Zadanie1();
+            //Console.WriteLine("\nZadanie 2:\n");
+            //Zadanie2();
+
+            string s_input = "Krzysztof Molenda, 1965-11-20; Jan Kowalski, 1987-01-01; Anna Abacka, 1972-05-20; Józef Kabacki, 2000-01-02; Kazimierz Moksa, 2001-01-02";
+
+            var napis = " Krzysztof  Molenda,  1987-01-01; Jan Kowalski, 1987-01-01; Anna Abacka, 1972-05-20; Józef Kabacki, 2000-01-02; Kazimierz Moksa, 2001-01-02";
+            var wynik = SortByDateOfBirthThenLastName(napis);
+            Console.WriteLine(wynik);
+
+            
+        }
+
+        private static string SortByDateOfBirthThenLastName(string s_input)
+        {
+            var q1 = s_input.Split(';', StringSplitOptions.RemoveEmptyEntries)
+                     .Select(x => x.Trim().Split(",", StringSplitOptions.RemoveEmptyEntries))
+                     .Select(x => (fullName: x[0].Split(' ', StringSplitOptions.RemoveEmptyEntries), dateOfBirth: x[1]))
+                     .OrderBy(x => DateTime.Parse(x.dateOfBirth))
+                     .ThenBy(x => x.fullName[1])
+                     .Select(x => $"{x.fullName[1].Trim()} {x.fullName[0].Trim()}, {x.dateOfBirth.Trim()}")
+                     .ToList();
+
+            return String.Join("; ", q1);
         }
 
         private static void WithoutLINQ()

@@ -1,0 +1,42 @@
+﻿<Window x:Class="WpfApp1.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1"
+        mc:Ignorable="d"
+        Title="15771 - Denis Biskup - Sign in" Height="325" Width="300" ResizeMode="NoResize">
+    <Grid Width="200">
+        
+        <StackPanel Name="LoginForm" Visibility="Visible">
+            <Label Grid.Row="0" Content="Sign In" FontSize="48" HorizontalContentAlignment="center" VerticalAlignment="top" FontFamily="Arial" Name="Login_Label_Header"></Label>
+            <Label Grid.Row="1" Content="Username" FontSize="24" Name="Login_Label_Username" MouseLeftButtonDown="Login_FocusTxtBox"></Label>
+            <TextBox Grid.Row="2" Padding="5" Name="Login_TxtBox_Username"></TextBox>
+            <Label Grid.Row="3" Content="Password" FontSize="24" Name="Login_Label_Password" MouseLeftButtonDown="Login_FocusTxtBox"></Label>
+            <PasswordBox Grid.Row="4" Padding="5" Name="Login_TxtBox_Password"></PasswordBox>
+            <Button Grid.Row="5" Content="Sign In" Margin="0 10" Padding="5" Name="Login_Button_SignIn"></Button>
+            <TextBlock Grid.Row="6" Name="Login_TxtBlock_SignUp">
+                <Run Text="Don't have an account? "></Run>
+                <Hyperlink Click="SignUp_OpenForm">
+                    <Run Text="Sign up"></Run>
+                </Hyperlink>
+            </TextBlock>
+        </StackPanel>
+
+        <StackPanel Name="RegisterForm" Visibility="Collapsed">
+            <Label Grid.Row="0" Content="Sign Up" FontSize="48" HorizontalContentAlignment="center" VerticalAlignment="top" FontFamily="Arial" Name="Register_Label_Header"></Label>
+            <Label Grid.Row="1" Content="Username" FontSize="24" Name="Register_Label_Username" MouseLeftButtonDown="Register_FocusTxtBox"></Label>
+            <TextBox Grid.Row="2" Padding="5" Name="Register_TxtBox_Username"></TextBox>
+            <Label Grid.Row="3" Content="Password" FontSize="24" Name="Register_Label_Password" MouseLeftButtonDown="Register_FocusTxtBox"></Label>
+            <PasswordBox Grid.Row="4" Padding="5" Name="Register_TxtBox_Password"></PasswordBox>
+            <Button Grid.Row="5" Content="Sign Up" Margin="0 10" Padding="5" Name="Register_Button_SignIn"></Button>
+            <TextBlock Grid.Row="6" Name="Register_TxtBlock_SignUp">
+            <Run Text="Already have an account? "></Run>
+            <Hyperlink Click="SignIn_OpenForm">
+                <Run Text="Sign in"></Run>
+            </Hyperlink>
+                </TextBlock>
+        </StackPanel>
+
+    </Grid>
+</Window>
