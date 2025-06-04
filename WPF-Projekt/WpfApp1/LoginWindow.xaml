@@ -14,7 +14,7 @@
             <TextBox Grid.Row="2" Padding="5" Name="Login_TxtBox_Username"></TextBox>
             <Label Grid.Row="3" Content="Password" FontSize="24" Name="Login_Label_Password" MouseLeftButtonDown="Login_FocusTxtBox"></Label>
             <PasswordBox Grid.Row="4" Padding="5" Name="Login_TxtBox_Password"></PasswordBox>
-            <Button Grid.Row="5" Content="Sign In" Margin="0 10" Padding="5" Name="Login_Button_SignIn"></Button>
+            <Button Grid.Row="5" Content="Sign In" Margin="0 10" Padding="5" Name="Login_Button_SignIn" Click="Login_Validate"></Button>
             <TextBlock Grid.Row="6" Name="Login_TxtBlock_SignUp">
                 <Run Text="Don't have an account? "></Run>
                 <Hyperlink Click="SignUp_OpenForm">
@@ -29,7 +29,7 @@
             <TextBox Grid.Row="2" Padding="5" Name="Register_TxtBox_Username"></TextBox>
             <Label Grid.Row="3" Content="Password" FontSize="24" Name="Register_Label_Password" MouseLeftButtonDown="Register_FocusTxtBox"></Label>
             <PasswordBox Grid.Row="4" Padding="5" Name="Register_TxtBox_Password"></PasswordBox>
-            <Button Grid.Row="5" Content="Sign Up" Margin="0 10" Padding="5" Name="Register_Button_SignIn"></Button>
+            <Button Grid.Row="5" Content="Sign Up" Margin="0 10" Padding="5" Name="Register_Button_SignIn" Click="Register_Validate"></Button>
             <TextBlock Grid.Row="6" Name="Register_TxtBlock_SignUp">
             <Run Text="Already have an account? "></Run>
             <Hyperlink Click="SignIn_OpenForm">
