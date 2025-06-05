@@ -76,7 +76,7 @@ namespace WpfApp1.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Password = table.Column<string>(type: "TEXT", nullable: false),
-                    Employee_Title_Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    Employee_Title_Id = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -85,8 +85,7 @@ namespace WpfApp1.Migrations
                         name: "FK_Users_Employee_Titles_Employee_Title_Id",
                         column: x => x.Employee_Title_Id,
                         principalTable: "Employee_Titles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.InsertData(
@@ -116,6 +115,11 @@ namespace WpfApp1.Migrations
                     { 1, "Seat Ibiza 3", "KWI9123", "3VWSB81H8WM210368", 2003, 1 },
                     { 2, "Dodge Ram Pickup", "KRTEST", "1D7HA16D94J171206", 2016, 2 }
                 });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "Employee_Title_Id", "Name", "Password" },
+                values: new object[] { 1, 3, "admin", "$2a$11$5Q4XJlPQM2r2rwk9qMJdp.yT0IYabz6SPq5gpPHggLQkcNTk5Gs6i" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Client_Vehicles_Client_Id",

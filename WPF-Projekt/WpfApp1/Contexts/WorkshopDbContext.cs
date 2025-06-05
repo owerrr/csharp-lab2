@@ -22,7 +22,7 @@ namespace WpfApp1.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Users>().HasOne(u => u.EmployeeTitle).WithMany(e => e.Users).HasForeignKey(u => u.Employee_Title_Id);
+            modelBuilder.Entity<Users>().HasOne(u => u.EmployeeTitle).WithMany(e => e.Users).HasForeignKey(u => u.Employee_Title_Id).IsRequired(false);
             modelBuilder.Entity<ClientVehicles>().HasOne(v => v.Client).WithMany(c => c.Vehicles).HasForeignKey(v => v.Client_Id);
 
             modelBuilder.Entity<EmployeeTitles>().HasData(

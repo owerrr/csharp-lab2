@@ -6,15 +6,107 @@
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    
+    <Window.Resources>
+        <Style x:Key="RoundedButtonStyle" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="#FFEFACAC"
+                BorderBrush="#FFEFACAC"
+                BorderThickness="2"
+                Padding="25 10"
+                Margin="0 0 0 10"
+                CornerRadius="1">
+                            <ContentPresenter HorizontalAlignment="Center"
+                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    
     <Grid>
-        <Grid Margin="200,10,200,10">
-            <Label Content="Aplikacja" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Width="400" Height="45" FontSize="24"/>
-            <Label Content="Login" HorizontalAlignment="Left" HorizontalContentAlignment="Center" Margin="0,65,0,0" Width="400" Height="30" VerticalAlignment="Top"/>
-            <TextBox HorizontalAlignment="Center" Margin="0,100,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" Height="20" HorizontalContentAlignment="center"/>
-            <Label Content="Login" HorizontalAlignment="Left" HorizontalContentAlignment="Center" Margin="0,125,0,0" Width="400" Height="30" VerticalAlignment="Top"/>
-            <TextBox HorizontalAlignment="Center" Margin="0,160,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" Height="20" HorizontalContentAlignment="center"/>
-            <Button Content="Sign in" HorizontalAlignment="Center" Margin="0,190,0,0" VerticalAlignment="Top" Width="120" Height="20"/>
-            <Button Content="Sign up" HorizontalAlignment="Center" Margin="0,215,0,0" VerticalAlignment="Top" Width="120" Height="20"/>
-        </Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Row="0" Grid.Column="1" Name="Window_Nav" Visibility="Visible">
+            <Label Content="Welcome" HorizontalAlignment="Right" Name="Nav_WelcomeLabel"></Label>
+            <Button Content="Log out" HorizontalAlignment="Right" Margin="0 0 5 0" Padding="5 2" Click="LogOut_Button_Click"></Button>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Name="Buttons_Worker" Margin="50 10" Visibility="Collapsed">
+            <Button Content="Your vehicles!" Name="Button_Worker_Test" HorizontalAlignment="left" Style="{StaticResource RoundedButtonStyle}"></Button>
+
+            <Button Content="Your vehicles!" HorizontalAlignment="left" Style="{StaticResource RoundedButtonStyle}"></Button>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Grid.Column="1" Name="Content_Worker" Margin="50 10" Visibility="Collapsed">
+            <Label Content="Jakis test" Name="Content_Worker_Label_Test" FontSize="48" HorizontalContentAlignment="center"></Label>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Name="Buttons_Client" Margin="50 10" Visibility="Visible">
+            <Button Content="Your vehicles!" Name="Button_Client_Vehicles" HorizontalAlignment="Stretch" Style="{StaticResource RoundedButtonStyle}" Click="Client_Button_ViewVehicles_Click"></Button>
+
+            <Button Content="View liabilities" Name="Button_Client_Liabilities" HorizontalAlignment="Stretch" Style="{StaticResource RoundedButtonStyle}" Click="Client_Button_ViewLiabilities_Click"></Button>
+            
+            <Button Content="Your informations!" Name="Button_Client_Informations" HorizontalAlignment="Stretch" Style="{StaticResource RoundedButtonStyle}" Click="Client_Button_ViewInformations_Click"></Button>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Grid.Column="1" Name="Content_Client" Margin="50 10">
+            
+            <Label Grid.Row="0" Content="" FontSize="24" HorizontalContentAlignment="center" Name="Content_Client_Header"></Label>
+
+            <StackPanel Name="Content_Client_Vehicles" Visibility="Collapsed">
+                <DataGrid Height="100" d:ItemsSource="{d:SampleData ItemCount=6}"/>
+            </StackPanel>
+            <StackPanel Name="Content_Client_Liabilities" Visibility="Collapsed">
+                <DataGrid Height="100" d:ItemsSource="{d:SampleData ItemCount=6}"/>
+            </StackPanel>
+            <Grid Name="Content_Client_Informations" Visibility="Collapsed" Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="0" Grid.Column="0" Content="First name:" Margin="0 5"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Width="150" HorizontalAlignment="Left" Padding="5" Margin="0 5"/>
+
+                <Label Grid.Row="1" Grid.Column="0" Content="Last name:" Margin="0 5"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Width="150" HorizontalAlignment="Left" Padding="5" Margin="0 5"/>
+
+                <Label Grid.Row="2" Grid.Column="0" Content="Phone number:" Margin="0 5"/>
+                <TextBox Grid.Row="2" Grid.Column="1" Width="150" HorizontalAlignment="Left" Padding="5" Margin="0 5"/>
+
+                <Label Grid.Row="3" Grid.Column="0" Content="Postal code:" Margin="0 5"/>
+                <TextBox Grid.Row="3" Grid.Column="1" Width="150" HorizontalAlignment="Left" Padding="5" Margin="0 5"/>
+
+                <Label Grid.Row="4" Grid.Column="0" Content="City:" Margin="0 5"/>
+                <TextBox Grid.Row="4" Grid.Column="1" Width="150" HorizontalAlignment="Left" Padding="5" Margin="0 5"/>
+
+                <Label Grid.Row="5" Grid.Column="0" Content="Street:" Margin="0 5"/>
+                <TextBox Grid.Row="5" Grid.Column="1" Width="150" HorizontalAlignment="Left" Padding="5" Margin="0 5"/>
+
+                <Label Grid.Row="6" Grid.Column="0" Content="Building number:" Margin="0 5"/>
+                <TextBox Grid.Row="6" Grid.Column="1" Width="150" HorizontalAlignment="Left" Padding="5" Margin="0 5"/>
+
+                <Button Grid.Row="7" Grid.Column="1" Content="Save" HorizontalAlignment="left" Padding="61.5 5"></Button>
+            </Grid>
+        </StackPanel>
     </Grid>
 </Window>

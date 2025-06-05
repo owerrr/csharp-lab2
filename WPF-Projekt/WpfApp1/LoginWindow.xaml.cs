@@ -23,14 +23,16 @@ namespace WpfApp1
     /// </summary>
     public partial class LoginWindow : Window
     {
+        private Users _user { get; set; }
         public LoginWindow()
         {
             InitializeComponent();
+            _user = null;
         }
 
         public void OnLoginSuccessful()
         {
-            MainWindow mw = new MainWindow();
+            MainWindow mw = new MainWindow(_user);
             this.Close();
             mw.Show();
         }
@@ -52,6 +54,7 @@ namespace WpfApp1
 
                 if (user != null && BCrypt.Net.BCrypt.Verify(userPswd, user.Password))
                 {
+                    _user = user;
                     OnLoginSuccessful();
                 }
                 else
@@ -138,7 +141,7 @@ namespace WpfApp1
                 }
                 else
                 {
-                    var user = new Users { Name=userName, Password=userPswd, Employee_Title_Id=1 };
+                    var user = new Users { Name=userName, Password=userPswd, Employee_Title_Id=null };
                     context.Users.Add(user);
                     context.SaveChanges();
                     OnRegisterSuccessful();

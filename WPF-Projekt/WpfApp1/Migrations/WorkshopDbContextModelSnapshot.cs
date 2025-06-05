@@ -174,7 +174,7 @@ namespace WpfApp1.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Employee_Title_Id")
+                    b.Property<int?>("Employee_Title_Id")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
@@ -216,9 +216,7 @@ namespace WpfApp1.Migrations
                 {
                     b.HasOne("WpfApp1.Models.EmployeeTitles", "EmployeeTitle")
                         .WithMany("Users")
-                        .HasForeignKey("Employee_Title_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Employee_Title_Id");
 
                     b.Navigation("EmployeeTitle");
                 });

@@ -13,7 +13,7 @@ namespace WpfApp1.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Password { get; set; }
-        public int Employee_Title_Id { get; set; }
+        public int? Employee_Title_Id { get; set; }
         public EmployeeTitles EmployeeTitle { get; set; }
     }
 }
