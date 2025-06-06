@@ -22,5 +22,7 @@ namespace WpfApp1.Models
         public string Car_RegNo { get; set; }
         [Required]
         public int Car_Year { get; set; }
+        public bool IsMaintenanced { get; set; } = false;
+        public DateOnly? EstimatedMaintenanceEnd { get; set; }
     }
 }

@@ -6,27 +6,6 @@
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    
-    <Window.Resources>
-        <Style x:Key="RoundedButtonStyle" TargetType="Button">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="#FFEFACAC"
-                BorderBrush="#FFEFACAC"
-                BorderThickness="2"
-                Padding="25 10"
-                Margin="0 0 0 10"
-                CornerRadius="1">
-                            <ContentPresenter HorizontalAlignment="Center"
-                              VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </Window.Resources>
-    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"></RowDefinition>
@@ -36,6 +15,7 @@
             <ColumnDefinition Width="auto"></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
+
         <StackPanel Grid.Row="0" Grid.Column="1" Name="Window_Nav" Visibility="Visible">
             <Label Content="Welcome" HorizontalAlignment="Right" Name="Nav_WelcomeLabel"></Label>
             <Button Content="Log out" HorizontalAlignment="Right" Margin="0 0 5 0" Padding="5 2" Click="LogOut_Button_Click"></Button>
@@ -63,14 +43,26 @@
             <Label Grid.Row="0" Content="" FontSize="24" HorizontalContentAlignment="center" Name="Content_Client_Header"></Label>
 
             <StackPanel Name="Content_Client_Vehicles" Visibility="Collapsed">
-                <DataGrid Height="100" d:ItemsSource="{d:SampleData ItemCount=6}"/>
+
+                <Grid Margin="0 0 0 10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Content="test test test" Grid.Column="0" VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource Client_Vehicle_ModifyBtn}" Content="MODIFY" Grid.Column="1" VerticalAlignment="Center"/>
+                </Grid>
+
+                <Button Style="{StaticResource VehicleAddButtonStyle}" Content="Add new vehicle" Margin="0 0 0 10"></Button>
+                <Button Style="{StaticResource VehicleRefreshButtonStyle}" Content="Refresh"></Button>
             </StackPanel>
             <StackPanel Name="Content_Client_Liabilities" Visibility="Collapsed">
                 <DataGrid Height="100" d:ItemsSource="{d:SampleData ItemCount=6}"/>
             </StackPanel>
-            <Grid Name="Content_Client_Informations" Visibility="Collapsed" Margin="0,10,0,0">
+            <Grid Name="Content_Client_Informations" Visibility="Collapsed" Margin="0,0,0,0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
@@ -84,29 +76,31 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <Label Grid.Row="0" Grid.Column="0" Content="First name:" Margin="0 5"/>
-                <TextBox Grid.Row="0" Grid.Column="1" Width="150" HorizontalAlignment="Left" Padding="5" Margin="0 5"/>
+                <Label Grid.Row="0" Grid.Column="0" Content="*First name:" Margin="30 0 0 0"/>
+                <TextBox Name="Client_Info_TxtBox_Firstname" Style="{StaticResource UnderlineTextBoxStyle}" Grid.Row="1" Grid.Column="0" Width="150" HorizontalAlignment="Center" Padding="5" Margin="0 0 0 5"/>
 
-                <Label Grid.Row="1" Grid.Column="0" Content="Last name:" Margin="0 5"/>
-                <TextBox Grid.Row="1" Grid.Column="1" Width="150" HorizontalAlignment="Left" Padding="5" Margin="0 5"/>
+                <Label Grid.Row="2" Grid.Column="0" Content="*Last name:" Margin="30 0 0 0" />
+                <TextBox Name="Client_Info_TxtBox_Lastname" Style="{StaticResource UnderlineTextBoxStyle}" Grid.Row="3" Grid.Column="0" Width="150" HorizontalAlignment="Center" Padding="5" Margin="0 0 0 5"/>
 
-                <Label Grid.Row="2" Grid.Column="0" Content="Phone number:" Margin="0 5"/>
-                <TextBox Grid.Row="2" Grid.Column="1" Width="150" HorizontalAlignment="Left" Padding="5" Margin="0 5"/>
+                <Label Grid.Row="4" Grid.Column="0" Content="*Phone number:" Margin="30 0 0 0" />
+                <TextBox Name="Client_Info_TxtBox_Phonenumber" Style="{StaticResource UnderlineTextBoxStyle}" Grid.Row="5" Grid.Column="0" Width="150" HorizontalAlignment="Center" Padding="5" Margin="0 0 0 5"/>
 
-                <Label Grid.Row="3" Grid.Column="0" Content="Postal code:" Margin="0 5"/>
-                <TextBox Grid.Row="3" Grid.Column="1" Width="150" HorizontalAlignment="Left" Padding="5" Margin="0 5"/>
+                <Label Grid.Row="0" Grid.Column="1" Content="*Postal code:" Margin="30 0 0 0" />
+                <TextBox Name="Client_Info_TxtBox_Postalcode" Style="{StaticResource UnderlineTextBoxStyle}" Grid.Row="1" Grid.Column="1" Width="150" HorizontalAlignment="Center" Padding="5" Margin="0 0 0 5"/>
 
-                <Label Grid.Row="4" Grid.Column="0" Content="City:" Margin="0 5"/>
-                <TextBox Grid.Row="4" Grid.Column="1" Width="150" HorizontalAlignment="Left" Padding="5" Margin="0 5"/>
+                <Label Grid.Row="2" Grid.Column="1" Content="*City:" Margin="30 0 0 0" />
+                <TextBox Name="Client_Info_TxtBox_City" Style="{StaticResource UnderlineTextBoxStyle}" Grid.Row="3" Grid.Column="1" Width="150" HorizontalAlignment="Center" Padding="5" Margin="0 0 0 5"/>
 
-                <Label Grid.Row="5" Grid.Column="0" Content="Street:" Margin="0 5"/>
-                <TextBox Grid.Row="5" Grid.Column="1" Width="150" HorizontalAlignment="Left" Padding="5" Margin="0 5"/>
+                <Label Grid.Row="4" Grid.Column="1" Content="*Street:" Margin="30 0 0 0" />
+                <TextBox Name="Client_Info_TxtBox_Street" Style="{StaticResource UnderlineTextBoxStyle}" Grid.Row="5" Grid.Column="1" Width="150" HorizontalAlignment="Center" Padding="5" Margin="0 0 0 5"/>
 
-                <Label Grid.Row="6" Grid.Column="0" Content="Building number:" Margin="0 5"/>
-                <TextBox Grid.Row="6" Grid.Column="1" Width="150" HorizontalAlignment="Left" Padding="5" Margin="0 5"/>
+                <Label Grid.Row="6" Grid.Column="1" Content="*Building number:" Margin="30 0 0 0" />
+                <TextBox Name="Client_Info_TxtBox_BuildingNo" Style="{StaticResource UnderlineTextBoxStyle}" Grid.Row="7" Grid.Column="1" Width="150" HorizontalAlignment="Center" Padding="5" Margin="0 0 0 5"/>
 
-                <Button Grid.Row="7" Grid.Column="1" Content="Save" HorizontalAlignment="left" Padding="61.5 5"></Button>
+                <Label Grid.Row="7" Grid.Column="0" Content="* - required" Margin="30 0 0 0" VerticalAlignment="Center"></Label>
             </Grid>
+            <Button Visibility="Collapsed" Name="Client_Info_SubmitButton" Grid.Column="0" Content="Save" HorizontalAlignment="Stretch" Padding="61.5 5" Margin="0 5" Foreground="White" Background="#1382C8" BorderBrush="#FF1382C8" Style="{StaticResource InfoHoverButtonStyle}" Click="Client_Info_SubmitButton_Verify"></Button>
+            
         </StackPanel>
     </Grid>
 </Window>

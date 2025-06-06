@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -55,7 +56,9 @@ namespace WpfApp1.Migrations
                     Car_Model = table.Column<string>(type: "TEXT", nullable: false),
                     Car_Vin = table.Column<string>(type: "TEXT", nullable: false),
                     Car_RegNo = table.Column<string>(type: "TEXT", nullable: false),
-                    Car_Year = table.Column<int>(type: "INTEGER", nullable: false)
+                    Car_Year = table.Column<int>(type: "INTEGER", nullable: false),
+                    IsMaintenanced = table.Column<bool>(type: "INTEGER", nullable: false),
+                    EstimatedMaintenanceEnd = table.Column<DateOnly>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -76,11 +79,17 @@ namespace WpfApp1.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Password = table.Column<string>(type: "TEXT", nullable: false),
-                    Employee_Title_Id = table.Column<int>(type: "INTEGER", nullable: true)
+                    Employee_Title_Id = table.Column<int>(type: "INTEGER", nullable: true),
+                    Client_Id = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Users_Clients_Client_Id",
+                        column: x => x.Client_Id,
+                        principalTable: "Clients",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Users_Employee_Titles_Employee_Title_Id",
                         column: x => x.Employee_Title_Id,
@@ -109,22 +118,28 @@ namespace WpfApp1.Migrations
 
             migrationBuilder.InsertData(
                 table: "Client_Vehicles",
-                columns: new[] { "Id", "Car_Model", "Car_RegNo", "Car_Vin", "Car_Year", "Client_Id" },
+                columns: new[] { "Id", "Car_Model", "Car_RegNo", "Car_Vin", "Car_Year", "Client_Id", "EstimatedMaintenanceEnd", "IsMaintenanced" },
                 values: new object[,]
                 {
-                    { 1, "Seat Ibiza 3", "KWI9123", "3VWSB81H8WM210368", 2003, 1 },
-                    { 2, "Dodge Ram Pickup", "KRTEST", "1D7HA16D94J171206", 2016, 2 }
+                    { 1, "Seat Ibiza 3", "KWI9123", "3VWSB81H8WM210368", 2003, 1, null, false },
+                    { 2, "Dodge Ram Pickup", "KRTEST", "1D7HA16D94J171206", 2016, 1, null, false }
                 });
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "Employee_Title_Id", "Name", "Password" },
-                values: new object[] { 1, 3, "admin", "$2a$11$5Q4XJlPQM2r2rwk9qMJdp.yT0IYabz6SPq5gpPHggLQkcNTk5Gs6i" });
+                columns: new[] { "Id", "Client_Id", "Employee_Title_Id", "Name", "Password" },
+                values: new object[] { 1, null, 3, "admin", "$2a$11$5Q4XJlPQM2r2rwk9qMJdp.yT0IYabz6SPq5gpPHggLQkcNTk5Gs6i" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Client_Vehicles_Client_Id",
                 table: "Client_Vehicles",
                 column: "Client_Id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Client_Id",
+                table: "Users",
+                column: "Client_Id",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Employee_Title_Id",

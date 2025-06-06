@@ -1,0 +1,24 @@
+﻿<Window x:Class="WpfApp1.AddVehicleWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1"
+        mc:Ignorable="d"
+        Title="AddVehicleWindow" Height="450" Width="300">
+    <Grid>
+        <StackPanel Margin="10 0">
+            <Label Content="New Vehicle" FontSize="32" HorizontalContentAlignment="center"></Label>
+            <Label Content="Vehicle model:" HorizontalAlignment="center" FontSize="16"></Label>
+            <TextBox Name="NewVehicles_TxtBox_Model" Width="150" HorizontalAlignment="center" Padding="5" Margin="0 0 0 10"></TextBox>
+            <Label Content="Vehicle registration number:" HorizontalAlignment="center" FontSize="16"></Label>
+            <TextBox Name="NewVehicles_TxtBox_RegNo" Width="150" HorizontalAlignment="center" Padding="5" Margin="0 0 0 10"></TextBox>
+            <Label Content="Vehicle VIN:" HorizontalAlignment="center" FontSize="16"></Label>
+            <TextBox Name="NewVehicles_TxtBox_VIN" Width="150" HorizontalAlignment="center" Padding="5" Margin="0 0 0 10"></TextBox>
+            <Label Content="Vehicle production year:" HorizontalAlignment="center" FontSize="16"></Label>
+            <TextBox Name="NewVehicles_TxtBox_Year" Width="150" HorizontalAlignment="center" Padding="5" Margin="0 0 0 10"></TextBox>
+            <Button Content="Submit Car" Width="200" Padding="5" Margin="0 0 0 10" Click="NewVehicle_ButtonAdd_Click"></Button>
+            <Button Content="Back" Width="200" Padding="5" Margin="0 0 0 10" Click="NewVehicle_ButtonBack_Click"></Button>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -30,6 +30,25 @@ namespace WpfApp1
             _user = null;
         }
 
+        // top bar
+        
+        private void Bar_Minimize_Click(object sender, RoutedEventArgs args)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void Bar_Close_Click(object sender, RoutedEventArgs args)
+        {
+            Close();
+        }
+
+        private void Border_MoveOnMouseDown(object sender, MouseButtonEventArgs args)
+        {
+            if (args.ChangedButton == MouseButton.Left)
+                DragMove();
+        }
+
+        // login
         public void OnLoginSuccessful()
         {
             MainWindow mw = new MainWindow(_user);
@@ -37,7 +56,7 @@ namespace WpfApp1
             mw.Show();
         }
 
-        private  void Login_Validate(object sender, RoutedEventArgs e)
+        private  void Login_Validate(object sender, RoutedEventArgs args)
         {
             var userName = Login_TxtBox_Username.Text;
             var userPswd = Login_TxtBox_Password.Password;
@@ -82,6 +101,7 @@ namespace WpfApp1
         {
             Login_TxtBox_Username.Text = "";
             Login_TxtBox_Password.Password = "";
+            Bar_Label_Header.Content = "Workshop - Sign Up";
             LoginForm.Visibility = Visibility.Collapsed;
             RegisterForm.Visibility = Visibility.Visible;
         }
@@ -107,6 +127,7 @@ namespace WpfApp1
         {
             Register_TxtBox_Username.Text = "";
             Register_TxtBox_Password.Password = "";
+            Bar_Label_Header.Content = "Workshop - Sign In";
             RegisterForm.Visibility = Visibility.Collapsed;
             LoginForm.Visibility = Visibility.Visible;
         }

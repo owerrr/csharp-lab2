@@ -27,5 +27,6 @@ namespace WpfApp1.Models
         public string Building_No { get; set; }
 
         public ICollection<ClientVehicles> Vehicles { get; set; }
+        public Users? User { get; set; }
     }
 }

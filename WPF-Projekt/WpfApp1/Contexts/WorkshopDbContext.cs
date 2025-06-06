@@ -23,6 +23,8 @@ namespace WpfApp1.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Users>().HasOne(u => u.EmployeeTitle).WithMany(e => e.Users).HasForeignKey(u => u.Employee_Title_Id).IsRequired(false);
+            modelBuilder.Entity<Users>().HasOne(u => u.Client).WithOne(c => c.User).HasForeignKey<Users>(u => u.Client_Id).IsRequired(false);
+            modelBuilder.Entity<Users>().HasIndex(u => u.Client_Id).IsUnique();
             modelBuilder.Entity<ClientVehicles>().HasOne(v => v.Client).WithMany(c => c.Vehicles).HasForeignKey(v => v.Client_Id);
 
             modelBuilder.Entity<EmployeeTitles>().HasData(
@@ -42,7 +44,7 @@ namespace WpfApp1.Contexts
 
             modelBuilder.Entity<ClientVehicles>().HasData(
                 new ClientVehicles { Id=1, Client_Id=1, Car_Model="Seat Ibiza 3", Car_Vin="3VWSB81H8WM210368", Car_RegNo="KWI9123", Car_Year=2003},
-                new ClientVehicles { Id=2, Client_Id=2, Car_Model="Dodge Ram Pickup", Car_Vin= "1D7HA16D94J171206", Car_RegNo="KRTEST", Car_Year=2016}
+                new ClientVehicles { Id=2, Client_Id=1, Car_Model="Dodge Ram Pickup", Car_Vin= "1D7HA16D94J171206", Car_RegNo="KRTEST", Car_Year=2016}
             );
         }
     }
