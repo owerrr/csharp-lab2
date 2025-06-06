@@ -168,6 +168,52 @@ public partial class MainWindow : Window
         }
     }
 
+    public void RefreshClientVehicles()
+    {
+        LoadClientVehicles();
+    }
+
+    private void Client_Vehicles_DeleteVehicle(object sender, RoutedEventArgs args)
+    {
+        int carId = Convert.ToInt32((sender as Button).Name.Split("_").Last());
+        //MessageBox.Show($"{carId}");
+        using (WorkshopDbContext context = new WorkshopDbContext())
+        {
+            var vehicleToDelete = context.Client_Vehicles.FirstOrDefault(x => x.Id == carId);
+            if (vehicleToDelete != null)
+            {
+                MessageBoxResult result = MessageBox.Show($"Do you want to delete {vehicleToDelete.Car_Model} Registration Number: {vehicleToDelete.Car_RegNo}?", "Delete vehicle confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (result == MessageBoxResult.Yes)
+                {
+
+                    context.Client_Vehicles.Remove(vehicleToDelete as ClientVehicles);
+                    context.SaveChanges();
+                    MessageBox.Show("Vehicle successfully deleted!");
+                    RefreshClientVehicles();
+                }
+            } 
+        }
+    }
+
+    private void Client_Vehicles_EditVehicle(object sender, RoutedEventArgs args)
+    {
+        int carId = Convert.ToInt32((sender as Button).Name.Split("_").Last());
+        ClientVehicles vehicleToEdit;
+        using (WorkshopDbContext context = new WorkshopDbContext())
+        {
+            vehicleToEdit = context.Client_Vehicles.FirstOrDefault(x => x.Id == carId);
+        }
+        if(vehicleToEdit != null)
+        {
+            AddVehicleWindow adw = new(_user, this, vehicleToEdit);
+            adw.ShowDialog();
+        }
+        else
+        {
+            MessageBox.Show("Something went wrong...");
+        }
+    }
+
     private void LoadClientVehicles()
     {
 
@@ -192,14 +238,20 @@ public partial class MainWindow : Window
                             var grid = new Grid { Margin = new Thickness(0, 0, 0, 10) };
                             grid.ColumnDefinitions.Add(new ColumnDefinition());
                             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+                            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
                             var label = new Label { Content = $"{veh.Car_Model} {veh.Car_Year} | {veh.Car_RegNo}", VerticalAlignment = VerticalAlignment.Center };
                             Grid.SetColumn(label, 0);
                             grid.Children.Add(label);
 
-                            var button = new Button { Content = "MODIFY", Style = (Style)Application.Current.FindResource("Client_Vehicle_ModifyBtn"), VerticalAlignment = VerticalAlignment.Center };
+                            var button = new Button { Content = "MODIFY", Style = (Style)Application.Current.FindResource("Client_Vehicle_ModifyBtn"), VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 5, 0), Name = $"Client_Vehicle_Modify_{veh.Id}" };
+                            var button2 = new Button { Content = "X", Style = (Style)Application.Current.FindResource("Client_Vehicle_DeleteBtn"), VerticalAlignment = VerticalAlignment.Center, Name = $"Client_Vehicle_Delete_{veh.Id}" };
+                            button.Click += Client_Vehicles_EditVehicle;
+                            button2.Click += Client_Vehicles_DeleteVehicle;
                             Grid.SetColumn(button, 1);
+                            Grid.SetColumn(button2, 2);
                             grid.Children.Add(button);
+                            grid.Children.Add(button2);
 
                             Content_Client_Vehicles.Children.Add(grid);
 
@@ -255,7 +307,7 @@ public partial class MainWindow : Window
 
     private void Client_AddVehicle(object sender, RoutedEventArgs args)
     {
-        AddVehicleWindow adw = new();
+        AddVehicleWindow adw = new(_user, this);
         adw.ShowDialog();
     }
 

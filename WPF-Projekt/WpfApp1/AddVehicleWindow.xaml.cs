@@ -11,6 +11,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using WpfApp1.Contexts;
+using WpfApp1.Models;
 
 namespace WpfApp1
 {
@@ -19,14 +21,110 @@ namespace WpfApp1
     /// </summary>
     public partial class AddVehicleWindow : Window
     {
-        public AddVehicleWindow()
+        private Users _user { get; set; }
+        private MainWindow _mw { get; set; }
+        private ClientVehicles _vehicle { get; set; }
+        public AddVehicleWindow(Users user, MainWindow mw, ClientVehicles vehicle=null)
         {
             InitializeComponent();
+            _user = user;
+            _mw = mw;
+            if (vehicle != null)
+            {
+                _vehicle = vehicle;
+                FixUI_EditVehicle();
+            }
+            else
+            {
+                ClearTextBoxes(); 
+                Label_WindowHeader.Content = "New Vehicle";
+            }
+        }
+
+        private void FixUI_EditVehicle()
+        {
+            NewVehicles_TxtBox_Model.Text = _vehicle.Car_Model;
+            NewVehicles_TxtBox_RegNo.Text = _vehicle.Car_RegNo;
+            NewVehicles_TxtBox_VIN.Text = _vehicle.Car_Vin;
+            NewVehicles_TxtBox_Year.Text = _vehicle.Car_Year.ToString();
+            Label_WindowHeader.Content = "Edit Vehicle";
         }
 
         private void NewVehicle_ButtonAdd_Click(object sender, RoutedEventArgs args)
         {
-            MessageBox.Show("add");
+            VerifyCarDetails();
+        }
+
+        private void VerifyCarDetails()
+        {
+            string model = NewVehicles_TxtBox_Model.Text;
+            string regNo = NewVehicles_TxtBox_RegNo.Text;
+            string vin = NewVehicles_TxtBox_VIN.Text;
+            int year = 0;
+            try
+            {
+                year = Convert.ToInt32(NewVehicles_TxtBox_Year.Text);
+            }catch(Exception ex)
+            {
+                MessageBox.Show("Car year must be an integer! For example: 2016");
+                return;
+            }
+
+            if (String.IsNullOrWhiteSpace(model)
+                || String.IsNullOrWhiteSpace(regNo)
+                || String.IsNullOrWhiteSpace(vin)
+                || year == 0
+            )
+            {
+                MessageBox.Show("You must fill all vehicle informations!");
+                return;
+            }
+
+            if(_vehicle != null)
+            {
+                using (WorkshopDbContext context = new WorkshopDbContext())
+                {
+                    _vehicle.Car_Model = model;
+                    _vehicle.Car_RegNo = regNo;
+                    _vehicle.Car_Vin = vin;
+                    _vehicle.Car_Year = year;
+                    context.Client_Vehicles.Update(_vehicle);
+                    context.SaveChanges();
+                    MessageBox.Show("Vehicle successfully changed!");
+                    _mw.RefreshClientVehicles();
+                    _mw = null;
+                    _user = null;
+                    _vehicle = null;
+                    this.Close();
+                }
+            }
+            else
+            {
+                using (WorkshopDbContext context = new WorkshopDbContext())
+                {
+                    bool userExists = context.Users.Any(x => x.Name == _user.Name);
+
+                    if (userExists)
+                    {
+                        Clients? c = context.Clients.FirstOrDefault(x => x.Id == _user.Client_Id);
+                        if (c != null)
+                        {
+                            var car = new ClientVehicles { Car_Model = model, Client_Id = c.Id, Car_RegNo = regNo, Car_Vin = vin, Car_Year = year };
+                            context.Client_Vehicles.Add(car);
+                            context.SaveChanges();
+                            MessageBox.Show("Vehicle successfully added!");
+                            _mw.RefreshClientVehicles();
+                            _mw = null;
+                            _user = null;
+                            this.Close();
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Something went wrong...");
+                    }
+                }
+            }
         }
 
         private void ClearTextBoxes()

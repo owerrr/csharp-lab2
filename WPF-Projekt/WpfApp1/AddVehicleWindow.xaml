@@ -8,7 +8,7 @@
         Title="AddVehicleWindow" Height="450" Width="300">
     <Grid>
         <StackPanel Margin="10 0">
-            <Label Content="New Vehicle" FontSize="32" HorizontalContentAlignment="center"></Label>
+            <Label Name="Label_WindowHeader" Content="New Vehicle" FontSize="32" HorizontalContentAlignment="center"></Label>
             <Label Content="Vehicle model:" HorizontalAlignment="center" FontSize="16"></Label>
             <TextBox Name="NewVehicles_TxtBox_Model" Width="150" HorizontalAlignment="center" Padding="5" Margin="0 0 0 10"></TextBox>
             <Label Content="Vehicle registration number:" HorizontalAlignment="center" FontSize="16"></Label>
@@ -17,7 +17,7 @@
             <TextBox Name="NewVehicles_TxtBox_VIN" Width="150" HorizontalAlignment="center" Padding="5" Margin="0 0 0 10"></TextBox>
             <Label Content="Vehicle production year:" HorizontalAlignment="center" FontSize="16"></Label>
             <TextBox Name="NewVehicles_TxtBox_Year" Width="150" HorizontalAlignment="center" Padding="5" Margin="0 0 0 10"></TextBox>
-            <Button Content="Submit Car" Width="200" Padding="5" Margin="0 0 0 10" Click="NewVehicle_ButtonAdd_Click"></Button>
+            <Button Content="Save Car" Width="200" Padding="5" Margin="0 0 0 10" Click="NewVehicle_ButtonAdd_Click"></Button>
             <Button Content="Back" Width="200" Padding="5" Margin="0 0 0 10" Click="NewVehicle_ButtonBack_Click"></Button>
         </StackPanel>
     </Grid>
