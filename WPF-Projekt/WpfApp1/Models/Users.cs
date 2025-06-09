@@ -19,5 +19,7 @@ namespace WpfApp1.Models
         public EmployeeTitles EmployeeTitle { get; set; }
         public int? Client_Id { get; set; }
         public Clients? Client { get; set; }
+        public int? Employee_Id { get; set; }
+        public Employees? Employee { get; set; }
     }
 }

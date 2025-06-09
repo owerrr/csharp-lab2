@@ -177,6 +177,51 @@ namespace WpfApp1.Migrations
                         });
                 });
 
+            modelBuilder.Entity("WpfApp1.Models.Employees", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Firstname")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Lastname")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Phonenumber")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Employees");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "testowy@mail.com",
+                            Firstname = "Denis",
+                            Lastname = "Biskup",
+                            Phonenumber = "123412341"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Email = "testowy2@mail.com",
+                            Firstname = "Testowy",
+                            Lastname = "Pracownik",
+                            Phonenumber = "111222333"
+                        });
+                });
+
             modelBuilder.Entity("WpfApp1.Models.Users", b =>
                 {
                     b.Property<int>("Id")
@@ -184,6 +229,9 @@ namespace WpfApp1.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("Client_Id")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("Employee_Id")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("Employee_Title_Id")
@@ -202,6 +250,9 @@ namespace WpfApp1.Migrations
                     b.HasIndex("Client_Id")
                         .IsUnique();
 
+                    b.HasIndex("Employee_Id")
+                        .IsUnique();
+
                     b.HasIndex("Employee_Title_Id");
 
                     b.ToTable("Users");
@@ -210,8 +261,17 @@ namespace WpfApp1.Migrations
                         new
                         {
                             Id = 1,
+                            Employee_Id = 1,
                             Employee_Title_Id = 3,
                             Name = "admin",
+                            Password = "$2a$11$5Q4XJlPQM2r2rwk9qMJdp.yT0IYabz6SPq5gpPHggLQkcNTk5Gs6i"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Employee_Id = 2,
+                            Employee_Title_Id = 2,
+                            Name = "pracownik",
                             Password = "$2a$11$5Q4XJlPQM2r2rwk9qMJdp.yT0IYabz6SPq5gpPHggLQkcNTk5Gs6i"
                         });
                 });
@@ -233,11 +293,17 @@ namespace WpfApp1.Migrations
                         .WithOne("User")
                         .HasForeignKey("WpfApp1.Models.Users", "Client_Id");
 
+                    b.HasOne("WpfApp1.Models.Employees", "Employee")
+                        .WithOne("User")
+                        .HasForeignKey("WpfApp1.Models.Users", "Employee_Id");
+
                     b.HasOne("WpfApp1.Models.EmployeeTitles", "EmployeeTitle")
                         .WithMany("Users")
                         .HasForeignKey("Employee_Title_Id");
 
                     b.Navigation("Client");
+
+                    b.Navigation("Employee");
 
                     b.Navigation("EmployeeTitle");
                 });
@@ -252,6 +318,11 @@ namespace WpfApp1.Migrations
             modelBuilder.Entity("WpfApp1.Models.EmployeeTitles", b =>
                 {
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("WpfApp1.Models.Employees", b =>
+                {
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

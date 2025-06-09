@@ -21,19 +21,31 @@
             <Button Content="Log out" HorizontalAlignment="Right" Margin="0 0 5 0" Padding="5 2" Click="LogOut_Button_Click"></Button>
         </StackPanel>
         <StackPanel Grid.Row="1" Name="Buttons_Worker" Margin="50 10" Visibility="Collapsed">
-            <Button Content="Your vehicles!" Name="Button_Worker_Test" HorizontalAlignment="left" Style="{StaticResource RoundedButtonStyle}"></Button>
-
-            <Button Content="Your vehicles!" HorizontalAlignment="left" Style="{StaticResource RoundedButtonStyle}"></Button>
+            <Button Content="View Employees!" Name="Button_Manager_ViewEmployees" HorizontalAlignment="Stretch" Style="{StaticResource RoundedButtonStyle}" Click="Manager_Button_ViewEmployees_Click"></Button>
+            <Button Content="View Clients!" Name="Button_Worker_ViewClients" HorizontalAlignment="Stretch" Style="{StaticResource RoundedButtonStyle}" Click="Worker_Button_ViewClients_Click"></Button>
+            <Button Content="Manage Vehicles!" Name="Button_Worker_ManageVehicles" HorizontalAlignment="Stretch" Style="{StaticResource RoundedButtonStyle}" Click="Worker_Button_ManageVehicles_Click"></Button>
         </StackPanel>
 
         <StackPanel Grid.Row="1" Grid.Column="1" Name="Content_Worker" Margin="50 10" Visibility="Collapsed">
-            <Label Content="Jakis test" Name="Content_Worker_Label_Test" FontSize="48" HorizontalContentAlignment="center"></Label>
+            <Label Content="Jakis test" Name="Content_Worker_Header" FontSize="48" HorizontalContentAlignment="center"></Label>
+
+            <StackPanel Name="Content_Manager_Employees" Visibility="Collapsed">
+                
+            </StackPanel>
+
+            <StackPanel Name="Content_Worker_Clients" Visibility="Collapsed">
+                
+            </StackPanel>
+
+            <StackPanel Name="Content_Worker_Vehicles" Visibility="Collapsed">
+                
+            </StackPanel>
         </StackPanel>
 
-        <StackPanel Grid.Row="1" Name="Buttons_Client" Margin="50 10" Visibility="Visible">
+        <StackPanel Grid.Row="1" Name="Buttons_Client" Margin="50 10" Visibility="Collapsed">
             <Button Content="Your vehicles!" Name="Button_Client_Vehicles" HorizontalAlignment="Stretch" Style="{StaticResource RoundedButtonStyle}" Click="Client_Button_ViewVehicles_Click"></Button>
 
-            <Button Content="View liabilities" Name="Button_Client_Liabilities" HorizontalAlignment="Stretch" Style="{StaticResource RoundedButtonStyle}" Click="Client_Button_ViewLiabilities_Click"></Button>
+            <Button Content="View history!" Name="Button_Client_History" HorizontalAlignment="Stretch" Style="{StaticResource RoundedButtonStyle}" Click="Client_Button_ViewHistory_Click"></Button>
             
             <Button Content="Your informations!" Name="Button_Client_Informations" HorizontalAlignment="Stretch" Style="{StaticResource RoundedButtonStyle}" Click="Client_Button_ViewInformations_Click"></Button>
         </StackPanel>

@@ -14,6 +14,7 @@ namespace WpfApp1.Contexts
         public DbSet<Users> Users { get; set; }
         public DbSet<Clients> Clients { get; set; }
         public DbSet<ClientVehicles> Client_Vehicles { get; set; }
+        public DbSet<Employees> Employees { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -24,7 +25,9 @@ namespace WpfApp1.Contexts
         {
             modelBuilder.Entity<Users>().HasOne(u => u.EmployeeTitle).WithMany(e => e.Users).HasForeignKey(u => u.Employee_Title_Id).IsRequired(false);
             modelBuilder.Entity<Users>().HasOne(u => u.Client).WithOne(c => c.User).HasForeignKey<Users>(u => u.Client_Id).IsRequired(false);
+            modelBuilder.Entity<Users>().HasOne(u => u.Employee).WithOne(e => e.User).HasForeignKey<Users>(u => u.Employee_Id).IsRequired(false);
             modelBuilder.Entity<Users>().HasIndex(u => u.Client_Id).IsUnique();
+            modelBuilder.Entity<Users>().HasIndex(u => u.Employee_Id).IsUnique();
             modelBuilder.Entity<ClientVehicles>().HasOne(v => v.Client).WithMany(c => c.Vehicles).HasForeignKey(v => v.Client_Id);
 
             modelBuilder.Entity<EmployeeTitles>().HasData(
@@ -33,8 +36,14 @@ namespace WpfApp1.Contexts
                 new EmployeeTitles { Id=3, Name="Manager", Hourly_Paycheck=50 }
             );
 
+            modelBuilder.Entity<Employees>().HasData(
+                new Employees { Id = 1, Firstname = "Denis", Lastname = "Biskup", Email = "testowy@mail.com", Phonenumber = "123412341" },
+                new Employees { Id = 2, Firstname = "Testowy", Lastname = "Pracownik", Email = "testowy2@mail.com", Phonenumber = "111222333" }
+            );
+
             modelBuilder.Entity<Users>().HasData(
-                new Users { Id=1, Name="admin", Password="$2a$11$5Q4XJlPQM2r2rwk9qMJdp.yT0IYabz6SPq5gpPHggLQkcNTk5Gs6i", Employee_Title_Id=3 }
+                new Users { Id = 1, Name = "admin", Password = "$2a$11$5Q4XJlPQM2r2rwk9qMJdp.yT0IYabz6SPq5gpPHggLQkcNTk5Gs6i", Employee_Title_Id = 3, Employee_Id = 1 },
+                new Users { Id = 2, Name = "pracownik", Password = "$2a$11$5Q4XJlPQM2r2rwk9qMJdp.yT0IYabz6SPq5gpPHggLQkcNTk5Gs6i", Employee_Title_Id = 2, Employee_Id = 2 }
             );
 
             modelBuilder.Entity<Clients>().HasData(

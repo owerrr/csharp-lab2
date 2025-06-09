@@ -47,6 +47,22 @@ namespace WpfApp1.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Employees",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Firstname = table.Column<string>(type: "TEXT", nullable: false),
+                    Lastname = table.Column<string>(type: "TEXT", nullable: false),
+                    Phonenumber = table.Column<string>(type: "TEXT", nullable: false),
+                    Email = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Employees", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Client_Vehicles",
                 columns: table => new
                 {
@@ -80,7 +96,8 @@ namespace WpfApp1.Migrations
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Password = table.Column<string>(type: "TEXT", nullable: false),
                     Employee_Title_Id = table.Column<int>(type: "INTEGER", nullable: true),
-                    Client_Id = table.Column<int>(type: "INTEGER", nullable: true)
+                    Client_Id = table.Column<int>(type: "INTEGER", nullable: true),
+                    Employee_Id = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -94,6 +111,11 @@ namespace WpfApp1.Migrations
                         name: "FK_Users_Employee_Titles_Employee_Title_Id",
                         column: x => x.Employee_Title_Id,
                         principalTable: "Employee_Titles",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Users_Employees_Employee_Id",
+                        column: x => x.Employee_Id,
+                        principalTable: "Employees",
                         principalColumn: "Id");
                 });
 
@@ -117,6 +139,15 @@ namespace WpfApp1.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Employees",
+                columns: new[] { "Id", "Email", "Firstname", "Lastname", "Phonenumber" },
+                values: new object[,]
+                {
+                    { 1, "testowy@mail.com", "Denis", "Biskup", "123412341" },
+                    { 2, "testowy2@mail.com", "Testowy", "Pracownik", "111222333" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Client_Vehicles",
                 columns: new[] { "Id", "Car_Model", "Car_RegNo", "Car_Vin", "Car_Year", "Client_Id", "EstimatedMaintenanceEnd", "IsMaintenanced" },
                 values: new object[,]
@@ -127,8 +158,12 @@ namespace WpfApp1.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "Client_Id", "Employee_Title_Id", "Name", "Password" },
-                values: new object[] { 1, null, 3, "admin", "$2a$11$5Q4XJlPQM2r2rwk9qMJdp.yT0IYabz6SPq5gpPHggLQkcNTk5Gs6i" });
+                columns: new[] { "Id", "Client_Id", "Employee_Id", "Employee_Title_Id", "Name", "Password" },
+                values: new object[,]
+                {
+                    { 1, null, 1, 3, "admin", "$2a$11$5Q4XJlPQM2r2rwk9qMJdp.yT0IYabz6SPq5gpPHggLQkcNTk5Gs6i" },
+                    { 2, null, 2, 2, "pracownik", "$2a$11$5Q4XJlPQM2r2rwk9qMJdp.yT0IYabz6SPq5gpPHggLQkcNTk5Gs6i" }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Client_Vehicles_Client_Id",
@@ -139,6 +174,12 @@ namespace WpfApp1.Migrations
                 name: "IX_Users_Client_Id",
                 table: "Users",
                 column: "Client_Id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Employee_Id",
+                table: "Users",
+                column: "Employee_Id",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -161,6 +202,9 @@ namespace WpfApp1.Migrations
 
             migrationBuilder.DropTable(
                 name: "Employee_Titles");
+
+            migrationBuilder.DropTable(
+                name: "Employees");
         }
     }
 }
