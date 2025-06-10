@@ -31,19 +31,22 @@ namespace WpfApp1.Contexts
             modelBuilder.Entity<ClientVehicles>().HasOne(v => v.Client).WithMany(c => c.Vehicles).HasForeignKey(v => v.Client_Id);
 
             modelBuilder.Entity<EmployeeTitles>().HasData(
-                new EmployeeTitles { Id=1, Name="Novice", Hourly_Paycheck=25 },
-                new EmployeeTitles { Id=2, Name="Mechanic", Hourly_Paycheck=35 },
-                new EmployeeTitles { Id=3, Name="Manager", Hourly_Paycheck=50 }
+                new EmployeeTitles { Id=1, Name="Novice", Hourly_Paycheck=25, Modify_Employees_Permissions = 0 },
+                new EmployeeTitles { Id=2, Name="Mechanic", Hourly_Paycheck=35, Modify_Employees_Permissions = 0 },
+                new EmployeeTitles { Id=3, Name="Manager", Hourly_Paycheck=50, Modify_Employees_Permissions = 1 },
+                new EmployeeTitles { Id=4, Name="Admin", Hourly_Paycheck=0, Modify_Employees_Permissions = 2 }
             );
 
             modelBuilder.Entity<Employees>().HasData(
                 new Employees { Id = 1, Firstname = "Denis", Lastname = "Biskup", Email = "testowy@mail.com", Phonenumber = "123412341" },
-                new Employees { Id = 2, Firstname = "Testowy", Lastname = "Pracownik", Email = "testowy2@mail.com", Phonenumber = "111222333" }
+                new Employees { Id = 2, Firstname = "Testowy", Lastname = "Manager", Email = "testowy2@mail.com", Phonenumber = "111222333" },
+                new Employees { Id = 3, Firstname = "Testowy", Lastname = "Pracownik", Email = "testowy2@mail.com", Phonenumber = "111222333" }
             );
 
             modelBuilder.Entity<Users>().HasData(
-                new Users { Id = 1, Name = "admin", Password = "$2a$11$5Q4XJlPQM2r2rwk9qMJdp.yT0IYabz6SPq5gpPHggLQkcNTk5Gs6i", Employee_Title_Id = 3, Employee_Id = 1 },
-                new Users { Id = 2, Name = "pracownik", Password = "$2a$11$5Q4XJlPQM2r2rwk9qMJdp.yT0IYabz6SPq5gpPHggLQkcNTk5Gs6i", Employee_Title_Id = 2, Employee_Id = 2 }
+                new Users { Id = 1, Name = "admin", Password = "$2a$11$5Q4XJlPQM2r2rwk9qMJdp.yT0IYabz6SPq5gpPHggLQkcNTk5Gs6i", Employee_Title_Id = 4, Employee_Id = 1 },
+                new Users { Id = 2, Name = "manager", Password = "$2a$11$5Q4XJlPQM2r2rwk9qMJdp.yT0IYabz6SPq5gpPHggLQkcNTk5Gs6i", Employee_Title_Id = 3, Employee_Id = 2 },
+                new Users { Id = 3, Name = "pracownik", Password = "$2a$11$5Q4XJlPQM2r2rwk9qMJdp.yT0IYabz6SPq5gpPHggLQkcNTk5Gs6i", Employee_Title_Id = 2, Employee_Id = 3 }
             );
 
             modelBuilder.Entity<Clients>().HasData(

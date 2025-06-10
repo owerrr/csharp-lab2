@@ -35,7 +35,7 @@ public partial class MainWindow : Window
         Nav_WelcomeLabel.Content = $"Welcome {_user.Name}!";
         if (_user.Employee_Title_Id != null)
         {
-            if(_user.Employee_Title_Id == 3)
+            if(_user.Employee_Title_Id == 3 || _user.Employee_Title_Id == 4)
                 Button_Manager_ViewEmployees.Visibility = Visibility.Visible;
             else
                 Button_Manager_ViewEmployees.Visibility = Visibility.Collapsed;
@@ -86,12 +86,19 @@ public partial class MainWindow : Window
         Manager_LoadEmployees();
     }
 
+    private bool Manager_LoadedEmployees { get; set; } = false;
     private void Manager_LoadEmployees()
     {
+        if (Manager_LoadedEmployees || _user == null) return;
+
         Content_Manager_Employees.Children.Clear();
+        bool validGenerated = false;
 
         using (WorkshopDbContext context = new WorkshopDbContext())
         {
+            int EmployeeModifyPermissions = context.Employee_Titles.FirstOrDefault(x => x.Id == _user.Employee_Title_Id).Modify_Employees_Permissions;
+            if (EmployeeModifyPermissions < 1) return;
+
             List<Users> Employees = context.Users.Where(x => x.Employee_Title_Id != null).ToList();
 
             if (Employees.Count > 0)
@@ -100,6 +107,8 @@ public partial class MainWindow : Window
 
                 var grid = new Grid { Margin = new Thickness(0, 0, 0, 10) };
 
+                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
@@ -158,19 +167,106 @@ public partial class MainWindow : Window
                     grid.Children.Add(labelLastname);
                     grid.Children.Add(labelEmpTitle);
 
+                    //
+                    int FoundedEmployeeModifyPermissions = empTitle.Modify_Employees_Permissions;
+                    if(FoundedEmployeeModifyPermissions <= EmployeeModifyPermissions)
+                    {
+                        var button = new Button { Content = "MODIFY", Style = (Style)Application.Current.FindResource("Client_Vehicle_ModifyBtn"), VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 5, 5, 5), Name = $"Manager_Employee_Modify_{empData.Id}" };
+                        var button2 = new Button { Content = "X", Style = (Style)Application.Current.FindResource("Client_Vehicle_DeleteBtn"), VerticalAlignment = VerticalAlignment.Center, Name = $"Manager_Employee_Delete_{empData.Id}" };
+                        button.Click += Manager_Employee_Edit_Click;
+                        button2.Click += Manager_Employee_Delete_Click;
+                        Grid.SetColumn(button, 4);
+                        Grid.SetColumn(button2, 5);
+                        Grid.SetRow(button, rowIdx);
+                        Grid.SetRow(button2, rowIdx);
+                        grid.Children.Add(button);
+                        grid.Children.Add(button2);
+                    }
+
                     rowIdx++;
                 }
 
                 scrollView.Content = grid;
 
                 Content_Manager_Employees.Children.Add(scrollView);
+
+                validGenerated = true;
             }
             else
             {
                 var label = new Label { Content = "There are no Employees, huh?", HorizontalContentAlignment = HorizontalAlignment.Center };
 
+                validGenerated = true;
             }
         }
+
+        if (validGenerated)
+        {
+            var submitButton = new Button { Style = (Style)Application.Current.FindResource("VehicleAddButtonStyle"), Content = "Add new employee", Margin = new Thickness(0, 10, 0, 10) };
+            submitButton.Click += Manager_AddEmployee_Click;
+            var refreshButton = new Button { Style = (Style)Application.Current.FindResource("VehicleRefreshButtonStyle"), Content = "Refresh employees list", Margin = new Thickness(0, 0, 0, 10) };
+            refreshButton.Click += Manager_RefreshEmployees_Click;
+            Content_Manager_Employees.Children.Add(submitButton);
+            Content_Manager_Employees.Children.Add(refreshButton);
+
+            Manager_LoadedEmployees = true;
+        }
+    }
+
+    private void Manager_Employee_Edit_Click(object sender, RoutedEventArgs args)
+    {
+        int empId = Convert.ToInt32((sender as Button).Name.Split("_").Last());
+        Employees empToEdit;
+        Users empUser = null;
+        using (WorkshopDbContext context = new WorkshopDbContext())
+        {
+            empToEdit = context.Employees.FirstOrDefault(x => x.Id == empId);
+            empUser = context.Users.FirstOrDefault(x => x.Employee_Id == empId);
+        }
+        if (empToEdit != null && empUser != null)
+        {
+            AddEmployeeWindow ademp = new(_user, this, empToEdit, empUser);
+            ademp.ShowDialog();
+        }
+        else
+        {
+            MessageBox.Show("Something went wrong...");
+        }
+    }
+    private void Manager_Employee_Delete_Click(object sender, RoutedEventArgs args)
+    {
+        int empId = Convert.ToInt32((sender as Button).Name.Split("_").Last());
+
+        using (WorkshopDbContext context = new WorkshopDbContext())
+        {
+            var empToDelete = context.Employees.FirstOrDefault(x => x.Id == empId);
+            if (empToDelete != null)
+            {
+                MessageBoxResult result = MessageBox.Show($"Do you want to delete {empToDelete.Firstname} {empToDelete.Lastname} with Email: {empToDelete.Email}?", "Delete employee confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (result == MessageBoxResult.Yes)
+                {
+
+                    context.Employees.Remove(empToDelete);
+                    context.SaveChanges();
+                    MessageBox.Show("Employee successfully deleted!");
+                    RefreshEmployees();
+                }
+            }
+        }
+    }
+    private void Manager_AddEmployee_Click(object sender, RoutedEventArgs args)
+    {
+        AddEmployeeWindow ademp = new(_user, this);
+        ademp.ShowDialog();
+    }
+    private void Manager_RefreshEmployees_Click(object sender, RoutedEventArgs args)
+    {
+        RefreshEmployees();
+    }
+    public void RefreshEmployees()
+    {
+        Manager_LoadedEmployees = false;
+        Manager_LoadEmployees();
     }
 
     private void LogOut_Button_Click(object sender, RoutedEventArgs args)

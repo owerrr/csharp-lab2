@@ -27,9 +27,9 @@
             <StackPanel Margin="0 30 0 0" Width="200" Name="LoginForm" Visibility="Visible">
                 <Label Content="Sign In" FontSize="48" HorizontalContentAlignment="center" VerticalAlignment="top" FontFamily="Arial" Name="Login_Label_Header" Foreground="White"></Label>
                 <Label Content="Username" FontSize="24" Name="Login_Label_Username" MouseLeftButtonDown="Login_FocusTxtBox" Foreground="White"></Label>
-                <TextBox Padding="5" Name="Login_TxtBox_Username"></TextBox>
+                <TextBox Padding="5" Name="Login_TxtBox_Username" KeyDown="Login_TxtBox_CheckForEnterClicked"></TextBox>
                 <Label Content="Password" FontSize="24" Name="Login_Label_Password" MouseLeftButtonDown="Login_FocusTxtBox" Foreground="White"></Label>
-                <PasswordBox Padding="5" Name="Login_TxtBox_Password"></PasswordBox>
+                <PasswordBox Padding="5" Name="Login_TxtBox_Password" KeyDown="Login_TxtBox_CheckForEnterClicked"></PasswordBox>
                 <Button Content="Sign In" Margin="0 10" Padding="5" Name="Login_Button_SignIn" Click="Login_Validate" Foreground="White" Background="#FF1382C8" BorderBrush="#FF1382C8"></Button>
                 <TextBlock Name="Login_TxtBlock_SignUp" Foreground="White">
                 <Run Text="Don't have an account? "></Run>

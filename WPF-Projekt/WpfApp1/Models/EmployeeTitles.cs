@@ -15,6 +15,7 @@ namespace WpfApp1.Models
         public string Name { get; set; }
         [Required]
         public int Hourly_Paycheck { get; set; }
+        public int Modify_Employees_Permissions { get; set; } = 0; 
 
         public ICollection<Users> Users { get; set; }
     }

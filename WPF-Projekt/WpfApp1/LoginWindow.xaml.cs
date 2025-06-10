@@ -170,5 +170,11 @@ namespace WpfApp1
                 }
             }
         }
+
+        private void Login_TxtBox_CheckForEnterClicked(object sender, KeyEventArgs args)
+        {
+            if (args.Key == Key.Enter)
+                Login_Validate(sender, args);
+;        }
     }
 }

@@ -39,7 +39,8 @@ namespace WpfApp1.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Hourly_Paycheck = table.Column<int>(type: "INTEGER", nullable: false)
+                    Hourly_Paycheck = table.Column<int>(type: "INTEGER", nullable: false),
+                    Modify_Employees_Permissions = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -130,12 +131,13 @@ namespace WpfApp1.Migrations
 
             migrationBuilder.InsertData(
                 table: "Employee_Titles",
-                columns: new[] { "Id", "Hourly_Paycheck", "Name" },
+                columns: new[] { "Id", "Hourly_Paycheck", "Modify_Employees_Permissions", "Name" },
                 values: new object[,]
                 {
-                    { 1, 25, "Novice" },
-                    { 2, 35, "Mechanic" },
-                    { 3, 50, "Manager" }
+                    { 1, 25, 0, "Novice" },
+                    { 2, 35, 0, "Mechanic" },
+                    { 3, 50, 1, "Manager" },
+                    { 4, 0, 2, "Admin" }
                 });
 
             migrationBuilder.InsertData(
@@ -144,7 +146,8 @@ namespace WpfApp1.Migrations
                 values: new object[,]
                 {
                     { 1, "testowy@mail.com", "Denis", "Biskup", "123412341" },
-                    { 2, "testowy2@mail.com", "Testowy", "Pracownik", "111222333" }
+                    { 2, "testowy2@mail.com", "Testowy", "Manager", "111222333" },
+                    { 3, "testowy2@mail.com", "Testowy", "Pracownik", "111222333" }
                 });
 
             migrationBuilder.InsertData(
@@ -161,8 +164,9 @@ namespace WpfApp1.Migrations
                 columns: new[] { "Id", "Client_Id", "Employee_Id", "Employee_Title_Id", "Name", "Password" },
                 values: new object[,]
                 {
-                    { 1, null, 1, 3, "admin", "$2a$11$5Q4XJlPQM2r2rwk9qMJdp.yT0IYabz6SPq5gpPHggLQkcNTk5Gs6i" },
-                    { 2, null, 2, 2, "pracownik", "$2a$11$5Q4XJlPQM2r2rwk9qMJdp.yT0IYabz6SPq5gpPHggLQkcNTk5Gs6i" }
+                    { 1, null, 1, 4, "admin", "$2a$11$5Q4XJlPQM2r2rwk9qMJdp.yT0IYabz6SPq5gpPHggLQkcNTk5Gs6i" },
+                    { 2, null, 2, 3, "manager", "$2a$11$5Q4XJlPQM2r2rwk9qMJdp.yT0IYabz6SPq5gpPHggLQkcNTk5Gs6i" },
+                    { 3, null, 3, 2, "pracownik", "$2a$11$5Q4XJlPQM2r2rwk9qMJdp.yT0IYabz6SPq5gpPHggLQkcNTk5Gs6i" }
                 });
 
             migrationBuilder.CreateIndex(

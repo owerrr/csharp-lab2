@@ -11,7 +11,7 @@ using WpfApp1.Contexts;
 namespace WpfApp1.Migrations
 {
     [DbContext(typeof(WorkshopDbContext))]
-    [Migration("20250609210247_DbInit")]
+    [Migration("20250610185831_DbInit")]
     partial class DbInit
     {
         /// <inheritdoc />
@@ -151,6 +151,9 @@ namespace WpfApp1.Migrations
                     b.Property<int>("Hourly_Paycheck")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("Modify_Employees_Permissions")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -164,19 +167,29 @@ namespace WpfApp1.Migrations
                         {
                             Id = 1,
                             Hourly_Paycheck = 25,
+                            Modify_Employees_Permissions = 0,
                             Name = "Novice"
                         },
                         new
                         {
                             Id = 2,
                             Hourly_Paycheck = 35,
+                            Modify_Employees_Permissions = 0,
                             Name = "Mechanic"
                         },
                         new
                         {
                             Id = 3,
                             Hourly_Paycheck = 50,
+                            Modify_Employees_Permissions = 1,
                             Name = "Manager"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Hourly_Paycheck = 0,
+                            Modify_Employees_Permissions = 2,
+                            Name = "Admin"
                         });
                 });
 
@@ -218,6 +231,14 @@ namespace WpfApp1.Migrations
                         new
                         {
                             Id = 2,
+                            Email = "testowy2@mail.com",
+                            Firstname = "Testowy",
+                            Lastname = "Manager",
+                            Phonenumber = "111222333"
+                        },
+                        new
+                        {
+                            Id = 3,
                             Email = "testowy2@mail.com",
                             Firstname = "Testowy",
                             Lastname = "Pracownik",
@@ -265,7 +286,7 @@ namespace WpfApp1.Migrations
                         {
                             Id = 1,
                             Employee_Id = 1,
-                            Employee_Title_Id = 3,
+                            Employee_Title_Id = 4,
                             Name = "admin",
                             Password = "$2a$11$5Q4XJlPQM2r2rwk9qMJdp.yT0IYabz6SPq5gpPHggLQkcNTk5Gs6i"
                         },
@@ -273,6 +294,14 @@ namespace WpfApp1.Migrations
                         {
                             Id = 2,
                             Employee_Id = 2,
+                            Employee_Title_Id = 3,
+                            Name = "manager",
+                            Password = "$2a$11$5Q4XJlPQM2r2rwk9qMJdp.yT0IYabz6SPq5gpPHggLQkcNTk5Gs6i"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Employee_Id = 3,
                             Employee_Title_Id = 2,
                             Name = "pracownik",
                             Password = "$2a$11$5Q4XJlPQM2r2rwk9qMJdp.yT0IYabz6SPq5gpPHggLQkcNTk5Gs6i"
