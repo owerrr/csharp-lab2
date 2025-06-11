@@ -43,7 +43,7 @@
             </StackPanel>
         </StackPanel>
 
-        <StackPanel Grid.Row="1" Name="Buttons_Client" Margin="20 10" Visibility="Visible">
+        <StackPanel Grid.Row="1" Name="Buttons_Client" Margin="20 10" Visibility="Collapsed">
             <Button Content="Your vehicles!" Name="Button_Client_Vehicles" HorizontalAlignment="Stretch" Style="{StaticResource RoundedButtonStyle}" Click="Client_Button_ViewVehicles_Click"></Button>
 
             <Button Content="View history!" Name="Button_Client_History" HorizontalAlignment="Stretch" Style="{StaticResource RoundedButtonStyle}" Click="Client_Button_ViewHistory_Click"></Button>
@@ -70,7 +70,18 @@
                 <Button Style="{StaticResource VehicleAddButtonStyle}" Content="Add new vehicle" Margin="0 0 0 10"></Button>
                 <Button Style="{StaticResource VehicleRefreshButtonStyle}" Content="Refresh"></Button>
             </StackPanel>
-            <StackPanel Name="Content_Client_VehicleHistory" Visibility="Collapsed">
+            <StackPanel Name="StackPanel_Client_VehicleHistory" Visibility="Collapsed">
+                <Grid Name="Content_Client_VehicleHistory_FilterGrid">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox Grid.Column="0" Name="Content_Client_VehicleHistory_Filter" Margin = "0 5 5 5" VerticalContentAlignment = "Center" />
+                    <Button Grid.Column="1" Width = "100" Content = "RESET" Style = "{StaticResource VehicleRefreshButtonStyle}" VerticalAlignment = "Center" Margin = "0 5 5 5" Name = "Client_VehicleHistory_FilterResetButton" Click="Client_VehicleHistory_FilterResetButton_Click"></Button>
+                </Grid>
+                <StackPanel Name="Content_Client_VehicleHistory" Visibility="Visible">
+
+                </StackPanel>
             </StackPanel>
             <Grid Name="Content_Client_Informations" Visibility="Collapsed" Margin="0,0,0,0">
                 <Grid.ColumnDefinitions>

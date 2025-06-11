@@ -64,7 +64,8 @@ namespace WpfApp1.Contexts
             );
 
             modelBuilder.Entity<EmployeeWorkOnVehicles>().HasData(
-                new EmployeeWorkOnVehicles { Id = 1, ClientVehicle_Id = 1, Employee_Id = 1, Date = DateOnly.FromDateTime(DateTime.Today), WorkOn = "wymiana żarówek:25.99:1;wymiana opon:49.99:1;wymiana skrzyni biegow:199.99:0" }
+                new EmployeeWorkOnVehicles { Id = 1, ClientVehicle_Id = 1, Employee_Id = 1, Date = DateOnly.FromDateTime(DateTime.Today), WorkOn = "wymiana żarówek:25.99:1;wymiana opon:49.99:1;wymiana skrzyni biegow:199.99:0" },
+                new EmployeeWorkOnVehicles { Id = 2, ClientVehicle_Id = 2, Employee_Id = 1, Date = DateOnly.FromDateTime(DateTime.Today), WorkOn = "wymiana żarówek:25.99:1;wymiana opon:49.99:1;wymiana skrzyni biegow:199.99:0" }
             );
         }
     }

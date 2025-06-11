@@ -296,7 +296,7 @@ public partial class MainWindow : Window
         Client_Info_SubmitButton.Visibility = Visibility.Collapsed;
         Client_Info_ChangePasswordButton.Visibility = Visibility.Collapsed;
         Content_Client_Vehicles.Visibility = Visibility.Visible;
-        Content_Client_VehicleHistory.Visibility = Visibility.Collapsed;
+        StackPanel_Client_VehicleHistory.Visibility = Visibility.Collapsed;
         Content_Client_Informations.Visibility = Visibility.Collapsed;
     }
 
@@ -313,14 +313,37 @@ public partial class MainWindow : Window
         Client_Info_SubmitButton.Visibility = Visibility.Collapsed;
         Client_Info_ChangePasswordButton.Visibility = Visibility.Collapsed;
         Content_Client_Vehicles.Visibility = Visibility.Collapsed;
-        Content_Client_VehicleHistory.Visibility = Visibility.Visible;
+        StackPanel_Client_VehicleHistory.Visibility = Visibility.Visible;
         Content_Client_Informations.Visibility = Visibility.Collapsed;
     }
+    private class ClientVehicleHistoryByVehicle
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } 
+        public string RegNo { get; set; }
+        public string MaintenanceDate { get; set; }
+        public string totalCost { get; set; }
+        public string WorkDone { get; set; }
+    }
+    private List<ClientVehicleHistoryByVehicle> _clientVehicleHistoryList = new();
+    private int _filteredClientVehicleId { get; set; } = -1;
     private void LoadClientVehicleHistory()
     {
+
+        Content_Client_VehicleHistory.Children.Clear();
+
+        List<ClientVehicles> clientVehicles = new();
+
         using (WorkshopDbContext context = new WorkshopDbContext())
         {
-            List<ClientVehicles> clientVehicles = context.Client_Vehicles.Where(x => x.Client_Id == _user.Client_Id).ToList();
+            if (_filteredClientVehicleId != -1)
+            {
+                clientVehicles = context.Client_Vehicles.Where(x => x.Id == _filteredClientVehicleId).ToList();
+            }
+            else
+            {
+                clientVehicles = context.Client_Vehicles.Where(x => x.Client_Id == _user.Client_Id).ToList();
+            }
 
             if (clientVehicles.Count > 0)
             {
@@ -332,8 +355,8 @@ public partial class MainWindow : Window
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
                 grid.ColumnDefinitions.Add(new ColumnDefinition());
+                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
                 grid.RowDefinitions.Add(new RowDefinition());
 
@@ -364,14 +387,14 @@ public partial class MainWindow : Window
                 int rowIdx = 1;
 
                 List<EmployeeWorkOnVehicles> empWorkDoneList = context.EmployeeWorkOnVehicles.Where(x => clientVehicles.Select(v => v.Id).Contains(x.ClientVehicle_Id)).OrderByDescending(x => x.Date).ToList();
-                foreach(EmployeeWorkOnVehicles empWorkDone in empWorkDoneList)
+                foreach (EmployeeWorkOnVehicles empWorkDone in empWorkDoneList)
                 {
                     grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
                     var totalCost = empWorkDone.WorkOn
                         .Split(';', StringSplitOptions.RemoveEmptyEntries)
                         .Select(x => x.Split(':', StringSplitOptions.RemoveEmptyEntries))
-                        .Sum(w => decimal.Parse(w[1], CultureInfo.InvariantCulture))
+                        .Sum(x => decimal.Parse(x[1], CultureInfo.InvariantCulture))
                         .ToString("0.00");
 
                     var vehicleNameLabel = new Label { Content = $"{clientVehicles.FirstOrDefault(x => x.Id == empWorkDone.ClientVehicle_Id).Car_Model}", VerticalAlignment = VerticalAlignment.Center };
@@ -379,6 +402,8 @@ public partial class MainWindow : Window
                     var vehicleMaintenanceDate = new Label { Content = $"{empWorkDone.Date}", VerticalAlignment = VerticalAlignment.Center };
                     var vehicleMaintenancePrice = new Label { Content = $"{totalCost}", VerticalAlignment = VerticalAlignment.Center };
                     var vehicleWorkDone = new Label { Content = $"{(empWorkDone.IsDone ? "Done" : "In progress")}", VerticalAlignment = VerticalAlignment.Center };
+
+                    _clientVehicleHistoryList.Add(new ClientVehicleHistoryByVehicle { Id = empWorkDone.Id, Name = vehicleNameLabel.Content.ToString(), RegNo = vehicleRegNo.Content.ToString(), MaintenanceDate = vehicleMaintenanceDate.Content.ToString(), totalCost = vehicleMaintenancePrice.Content.ToString(), WorkDone = vehicleWorkDone.Content.ToString() });
 
                     Grid.SetColumn(vehicleNameLabel, 0);
                     Grid.SetColumn(vehicleRegNo, 1);
@@ -398,21 +423,61 @@ public partial class MainWindow : Window
                     grid.Children.Add(vehicleMaintenancePrice);
                     grid.Children.Add(vehicleWorkDone);
 
-                    var button = new Button { Content = "INFO", Style = (Style)Application.Current.FindResource("Client_Vehicle_ModifyBtn"), VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 5, 5, 5), Name = $"Client_VehicleHistory_InfoButton_{empWorkDone.Id}" };
+                    var button = new Button { Width=100, Content = "INFO", Style = (Style)Application.Current.FindResource("Client_Vehicle_ModifyBtn"), VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 5, 5, 5), Name = $"Client_VehicleHistory_InfoButton_{empWorkDone.Id}" };
                     button.Click += Client_VehicleHistory_InfoButton_Click;
                     Grid.SetColumn(button, 5);
                     Grid.SetRow(button, rowIdx);
                     grid.Children.Add(button);
+
+                    rowIdx++;
                 }
+
+                Client_VehicleHistoryFilter_Generate();
 
                 scrollView.Content = grid;
                 Content_Client_VehicleHistory.Children.Add(scrollView);
             }
             else
             {
-                
+
             }
         }
+    }
+
+    private bool isFilterGenerated { get; set; } = false;
+    private void Client_VehicleHistoryFilter_Generate()
+    {
+        if (!isFilterGenerated)
+        {
+            isFilterGenerated = true;
+            var filterComboBox = Content_Client_VehicleHistory_Filter;
+
+            filterComboBox.SelectionChanged += Client_VehicleHistory_FilterVehicles;
+            filterComboBox.ItemsSource = _clientVehicleHistoryList;
+            filterComboBox.DisplayMemberPath = "Name";
+            filterComboBox.SelectedValuePath = "Id";
+        }
+    }
+
+    private void Client_VehicleHistory_FilterVehicles(object sender, RoutedEventArgs args)
+    {
+        _filteredClientVehicleId = (int)Content_Client_VehicleHistory_Filter.SelectedValue;
+        Client_VehicleHistory_Refresh();
+    }
+
+    private void Client_VehicleHistory_FilterResetButton_Click(object sender, RoutedEventArgs args)
+    {
+        Content_Client_VehicleHistory_Filter.SelectionChanged -= Client_VehicleHistory_FilterVehicles;
+        _filteredClientVehicleId = -1;
+        Content_Client_VehicleHistory_Filter.SelectedIndex = -1;
+        Content_Client_VehicleHistory_Filter.SelectionChanged += Client_VehicleHistory_FilterVehicles;
+        Client_VehicleHistory_Refresh();
+    }
+
+    private void Client_VehicleHistory_Refresh()
+    {
+        ClientVehicleHistoryLoaded = false;
+        LoadClientVehicleHistory();
     }
 
     private void Client_VehicleHistory_InfoButton_Click(object sender, RoutedEventArgs args)
@@ -447,7 +512,7 @@ public partial class MainWindow : Window
         Client_Info_SubmitButton.Visibility = Visibility.Visible;
         Client_Info_ChangePasswordButton.Visibility = Visibility.Visible;
         Content_Client_Vehicles.Visibility = Visibility.Collapsed;
-        Content_Client_VehicleHistory.Visibility = Visibility.Collapsed;
+        StackPanel_Client_VehicleHistory.Visibility = Visibility.Collapsed;
         Content_Client_Informations.Visibility = Visibility.Visible;
     }
 
