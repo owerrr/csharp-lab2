@@ -15,6 +15,7 @@ namespace WpfApp1.Models
         public string Name { get; set; }
         [Required]
         public string Password { get; set; }
+        public string? Email { get; set; }
         public int? Employee_Title_Id { get; set; }
         public EmployeeTitles EmployeeTitle { get; set; }
         public int? Client_Id { get; set; }

@@ -70,13 +70,13 @@ namespace WpfApp1
                 Employee_Label_Password.Visibility = Visibility.Collapsed;
                 Employee_Button_ChangePassword.Visibility = Visibility.Visible;
 
-                Employee_TextBox_Username.Text = _user.Name;
+                Employee_TextBox_Username.Text = _empUser.Name;
                 Employee_TextBox_Firstname.Text = _employee.Firstname;
                 Employee_TextBox_Lastname.Text = _employee.Lastname;
                 Employee_TextBox_Phonenumber.Text = _employee.Phonenumber;
-                Employee_TextBox_Email.Text = _employee.Email;
+                Employee_TextBox_Email.Text = _empUser.Email;
 
-                Employee_ComboBox_Titles.SelectedValue = _user.Employee_Title_Id;
+                Employee_ComboBox_Titles.SelectedValue = _empUser.Employee_Title_Id;
             }
             else
             {
@@ -93,7 +93,8 @@ namespace WpfApp1
 
         private void Employee_Button_ChangePassword_Click(object sender, RoutedEventArgs args)
         {
-            MessageBox.Show("test");
+            ChangePasswordWindow cpw = new(this, _empUser);
+            cpw.ShowDialog();
         }
 
         private void Employee_Button_Action_Click(object sender, RoutedEventArgs args)
@@ -126,9 +127,11 @@ namespace WpfApp1
                     _employee.Firstname = firstname;
                     _employee.Lastname = lastname;
                     _employee.Phonenumber = phonenumber;
-                    _employee.Email = email;
+                    _empUser.Email = email;
+                    _empUser.Employee_Title_Id = Convert.ToInt32(Employee_ComboBox_Titles.SelectedValue);
 
                     context.Employees.Update(_employee);
+                    context.Users.Update(_empUser);
                     context.SaveChanges();
                     MessageBox.Show("Employee successfully changed!");
                 }
@@ -149,10 +152,10 @@ namespace WpfApp1
                 using (WorkshopDbContext context = new WorkshopDbContext())
                 {
 
-                    Employees newEmp = new Employees { Firstname = firstname, Lastname = lastname, Phonenumber = phonenumber, Email = email };
+                    Employees newEmp = new Employees { Firstname = firstname, Lastname = lastname, Phonenumber = phonenumber };
                     context.Employees.Add(newEmp);
                     context.SaveChanges();
-                    Users newUser = new Users { Name = username, Password = password, Employee_Title_Id = 1, Employee_Id = newEmp.Id };
+                    Users newUser = new Users { Name = username, Password = password, Employee_Title_Id = Convert.ToInt32(Employee_ComboBox_Titles.SelectedValue), Employee_Id = newEmp.Id, Email = email };
                     context.Users.Add(newUser);
                     context.SaveChanges();
                     MessageBox.Show($"Successfully added new Employee!");

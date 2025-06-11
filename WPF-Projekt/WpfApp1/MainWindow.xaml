@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
+        Title="MainWindow" Height="500" Width="800"
         ResizeMode="NoResize">
     <Grid>
         <Grid.RowDefinitions>
@@ -43,7 +43,7 @@
             </StackPanel>
         </StackPanel>
 
-        <StackPanel Grid.Row="1" Name="Buttons_Client" Margin="50 10" Visibility="Collapsed">
+        <StackPanel Grid.Row="1" Name="Buttons_Client" Margin="20 10" Visibility="Visible">
             <Button Content="Your vehicles!" Name="Button_Client_Vehicles" HorizontalAlignment="Stretch" Style="{StaticResource RoundedButtonStyle}" Click="Client_Button_ViewVehicles_Click"></Button>
 
             <Button Content="View history!" Name="Button_Client_History" HorizontalAlignment="Stretch" Style="{StaticResource RoundedButtonStyle}" Click="Client_Button_ViewHistory_Click"></Button>
@@ -70,8 +70,7 @@
                 <Button Style="{StaticResource VehicleAddButtonStyle}" Content="Add new vehicle" Margin="0 0 0 10"></Button>
                 <Button Style="{StaticResource VehicleRefreshButtonStyle}" Content="Refresh"></Button>
             </StackPanel>
-            <StackPanel Name="Content_Client_Liabilities" Visibility="Collapsed">
-                <DataGrid Height="100" d:ItemsSource="{d:SampleData ItemCount=6}"/>
+            <StackPanel Name="Content_Client_VehicleHistory" Visibility="Collapsed">
             </StackPanel>
             <Grid Name="Content_Client_Informations" Visibility="Collapsed" Margin="0,0,0,0">
                 <Grid.ColumnDefinitions>
@@ -113,6 +112,7 @@
                 <Label Grid.Row="7" Grid.Column="0" Content="* - required" Margin="30 0 0 0" VerticalAlignment="Center"></Label>
             </Grid>
             <Button Visibility="Collapsed" Name="Client_Info_SubmitButton" Grid.Column="0" Content="Save" HorizontalAlignment="Stretch" Padding="61.5 5" Margin="0 5" Foreground="White" Background="#1382C8" BorderBrush="#FF1382C8" Style="{StaticResource InfoHoverButtonStyle}" Click="Client_Info_SubmitButton_Verify"></Button>
+            <Button Visibility="Collapsed" Name="Client_Info_ChangePasswordButton" Grid.Column="0" Content="Change Password" HorizontalAlignment="Stretch" Padding="61.5 5" Margin="0 5" Foreground="White" Background="#1382C8" BorderBrush="#FF1382C8" Style="{StaticResource VehicleRefreshButtonStyle}" Click="Client_Info_ChangPasswordButton_Click"></Button>
             
         </StackPanel>
     </Grid>

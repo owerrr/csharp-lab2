@@ -175,6 +175,12 @@ namespace WpfApp1
         {
             if (args.Key == Key.Enter)
                 Login_Validate(sender, args);
-;        }
+;       }
+
+        private void SignUp_ForgotPassword_Click(object sender, RoutedEventArgs args)
+        {
+            ChangePasswordWindow cpw = new(this);
+            cpw.ShowDialog();
+        }
     }
 }

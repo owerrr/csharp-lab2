@@ -24,5 +24,6 @@ namespace WpfApp1.Models
         public int Car_Year { get; set; }
         public bool IsMaintenanced { get; set; } = false;
         public DateOnly? EstimatedMaintenanceEnd { get; set; }
+        public ICollection<EmployeeWorkOnVehicles> EmployeeWorkOnVehicles { get; set; }
     }
 }

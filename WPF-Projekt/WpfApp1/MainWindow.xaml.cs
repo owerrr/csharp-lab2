@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Globalization;
+using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -169,7 +170,7 @@ public partial class MainWindow : Window
 
                     //
                     int FoundedEmployeeModifyPermissions = empTitle.Modify_Employees_Permissions;
-                    if(FoundedEmployeeModifyPermissions <= EmployeeModifyPermissions)
+                    if(FoundedEmployeeModifyPermissions <= EmployeeModifyPermissions && _user.Id != user.Id)
                     {
                         var button = new Button { Content = "MODIFY", Style = (Style)Application.Current.FindResource("Client_Vehicle_ModifyBtn"), VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 5, 5, 5), Name = $"Manager_Employee_Modify_{empData.Id}" };
                         var button2 = new Button { Content = "X", Style = (Style)Application.Current.FindResource("Client_Vehicle_DeleteBtn"), VerticalAlignment = VerticalAlignment.Center, Name = $"Manager_Employee_Delete_{empData.Id}" };
@@ -240,12 +241,14 @@ public partial class MainWindow : Window
         using (WorkshopDbContext context = new WorkshopDbContext())
         {
             var empToDelete = context.Employees.FirstOrDefault(x => x.Id == empId);
+            var empAccToDelete = context.Users.FirstOrDefault(x => x.Employee_Id == empId);
             if (empToDelete != null)
             {
-                MessageBoxResult result = MessageBox.Show($"Do you want to delete {empToDelete.Firstname} {empToDelete.Lastname} with Email: {empToDelete.Email}?", "Delete employee confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                MessageBoxResult result = MessageBox.Show($"Do you want to delete {empToDelete.Firstname} {empToDelete.Lastname}", "Delete employee confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if (result == MessageBoxResult.Yes)
                 {
-
+                    context.Users.Remove(empAccToDelete);
+                    context.SaveChanges();
                     context.Employees.Remove(empToDelete);
                     context.SaveChanges();
                     MessageBox.Show("Employee successfully deleted!");
@@ -291,18 +294,144 @@ public partial class MainWindow : Window
 
         Content_Client_Header.Content = "Your Vehicles!";
         Client_Info_SubmitButton.Visibility = Visibility.Collapsed;
+        Client_Info_ChangePasswordButton.Visibility = Visibility.Collapsed;
         Content_Client_Vehicles.Visibility = Visibility.Visible;
-        Content_Client_Liabilities.Visibility = Visibility.Collapsed;
+        Content_Client_VehicleHistory.Visibility = Visibility.Collapsed;
         Content_Client_Informations.Visibility = Visibility.Collapsed;
     }
 
+    private bool ClientVehicleHistoryLoaded { get; set; } = false;
     private void Client_Button_ViewHistory_Click(object sender, RoutedEventArgs args)
     {
+        if (!ClientVehicleHistoryLoaded)
+        {
+            ClientVehicleHistoryLoaded = true;
+            LoadClientVehicleHistory();
+        }
+
         Content_Client_Header.Content = "Your History!";
         Client_Info_SubmitButton.Visibility = Visibility.Collapsed;
+        Client_Info_ChangePasswordButton.Visibility = Visibility.Collapsed;
         Content_Client_Vehicles.Visibility = Visibility.Collapsed;
-        Content_Client_Liabilities.Visibility = Visibility.Visible;
+        Content_Client_VehicleHistory.Visibility = Visibility.Visible;
         Content_Client_Informations.Visibility = Visibility.Collapsed;
+    }
+    private void LoadClientVehicleHistory()
+    {
+        using (WorkshopDbContext context = new WorkshopDbContext())
+        {
+            List<ClientVehicles> clientVehicles = context.Client_Vehicles.Where(x => x.Client_Id == _user.Client_Id).ToList();
+
+            if (clientVehicles.Count > 0)
+            {
+                var scrollView = new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled, MaxHeight = 170 };
+
+                var grid = new Grid { Margin = new Thickness(0, 0, 0, 10) };
+
+                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+                grid.ColumnDefinitions.Add(new ColumnDefinition());
+
+                grid.RowDefinitions.Add(new RowDefinition());
+
+                var headerVehicleName = new Label { Content = "Vehicle", VerticalAlignment = VerticalAlignment.Center, FontWeight = FontWeights.Bold };
+                var headerVehicleRegNo = new Label { Content = "License plate", VerticalAlignment = VerticalAlignment.Center, FontWeight = FontWeights.Bold };
+                var headerVehicleMaintenanceDate = new Label { Content = "Date", VerticalAlignment = VerticalAlignment.Center, FontWeight = FontWeights.Bold };
+                var headerVehicleMaintenanePrice = new Label { Content = "Price", VerticalAlignment = VerticalAlignment.Center, FontWeight = FontWeights.Bold };
+                var headerVehicleIsFinished = new Label { Content = "Finished", VerticalAlignment = VerticalAlignment.Center, FontWeight = FontWeights.Bold };
+
+                Grid.SetColumn(headerVehicleName, 0);
+                Grid.SetColumn(headerVehicleRegNo, 1);
+                Grid.SetColumn(headerVehicleMaintenanceDate, 2);
+                Grid.SetColumn(headerVehicleMaintenanePrice, 3);
+                Grid.SetColumn(headerVehicleIsFinished, 4);
+
+                Grid.SetRow(headerVehicleName, 0);
+                Grid.SetRow(headerVehicleRegNo, 0);
+                Grid.SetRow(headerVehicleMaintenanceDate, 0);
+                Grid.SetRow(headerVehicleMaintenanePrice, 0);
+                Grid.SetRow(headerVehicleIsFinished, 0);
+
+                grid.Children.Add(headerVehicleName);
+                grid.Children.Add(headerVehicleRegNo);
+                grid.Children.Add(headerVehicleMaintenanceDate);
+                grid.Children.Add(headerVehicleMaintenanePrice);
+                grid.Children.Add(headerVehicleIsFinished);
+
+                int rowIdx = 1;
+
+                List<EmployeeWorkOnVehicles> empWorkDoneList = context.EmployeeWorkOnVehicles.Where(x => clientVehicles.Select(v => v.Id).Contains(x.ClientVehicle_Id)).OrderByDescending(x => x.Date).ToList();
+                foreach(EmployeeWorkOnVehicles empWorkDone in empWorkDoneList)
+                {
+                    grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+                    var totalCost = empWorkDone.WorkOn
+                        .Split(';', StringSplitOptions.RemoveEmptyEntries)
+                        .Select(x => x.Split(':', StringSplitOptions.RemoveEmptyEntries))
+                        .Sum(w => decimal.Parse(w[1], CultureInfo.InvariantCulture))
+                        .ToString("0.00");
+
+                    var vehicleNameLabel = new Label { Content = $"{clientVehicles.FirstOrDefault(x => x.Id == empWorkDone.ClientVehicle_Id).Car_Model}", VerticalAlignment = VerticalAlignment.Center };
+                    var vehicleRegNo = new Label { Content = $"{clientVehicles.FirstOrDefault(x => x.Id == empWorkDone.ClientVehicle_Id).Car_RegNo}", VerticalAlignment = VerticalAlignment.Center };
+                    var vehicleMaintenanceDate = new Label { Content = $"{empWorkDone.Date}", VerticalAlignment = VerticalAlignment.Center };
+                    var vehicleMaintenancePrice = new Label { Content = $"{totalCost}", VerticalAlignment = VerticalAlignment.Center };
+                    var vehicleWorkDone = new Label { Content = $"{(empWorkDone.IsDone ? "Done" : "In progress")}", VerticalAlignment = VerticalAlignment.Center };
+
+                    Grid.SetColumn(vehicleNameLabel, 0);
+                    Grid.SetColumn(vehicleRegNo, 1);
+                    Grid.SetColumn(vehicleMaintenanceDate, 2);
+                    Grid.SetColumn(vehicleMaintenancePrice, 3);
+                    Grid.SetColumn(vehicleWorkDone, 4);
+
+                    Grid.SetRow(vehicleNameLabel, rowIdx);
+                    Grid.SetRow(vehicleRegNo, rowIdx);
+                    Grid.SetRow(vehicleMaintenanceDate, rowIdx);
+                    Grid.SetRow(vehicleMaintenancePrice, rowIdx);
+                    Grid.SetRow(vehicleWorkDone, rowIdx);
+
+                    grid.Children.Add(vehicleNameLabel);
+                    grid.Children.Add(vehicleRegNo);
+                    grid.Children.Add(vehicleMaintenanceDate);
+                    grid.Children.Add(vehicleMaintenancePrice);
+                    grid.Children.Add(vehicleWorkDone);
+
+                    var button = new Button { Content = "INFO", Style = (Style)Application.Current.FindResource("Client_Vehicle_ModifyBtn"), VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 5, 5, 5), Name = $"Client_VehicleHistory_InfoButton_{empWorkDone.Id}" };
+                    button.Click += Client_VehicleHistory_InfoButton_Click;
+                    Grid.SetColumn(button, 5);
+                    Grid.SetRow(button, rowIdx);
+                    grid.Children.Add(button);
+                }
+
+                scrollView.Content = grid;
+                Content_Client_VehicleHistory.Children.Add(scrollView);
+            }
+            else
+            {
+                
+            }
+        }
+    }
+
+    private void Client_VehicleHistory_InfoButton_Click(object sender, RoutedEventArgs args)
+    {
+        int vehMaintenanceId = Convert.ToInt32((sender as Button).Name.Split("_").Last());
+        using(WorkshopDbContext context = new WorkshopDbContext())
+        {
+            EmployeeWorkOnVehicles veh = context.EmployeeWorkOnVehicles.FirstOrDefault(x => x.Id == vehMaintenanceId);
+            if(veh != null)
+            {
+                var workDoneSplitted = veh.WorkOn.Split(';', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Split(':', StringSplitOptions.RemoveEmptyEntries)).ToList();
+                string result = String.Join("\n", workDoneSplitted.Select(x => $"{x[0]}, cena: {x[1]}, {(x[2] == "1" ? "wykonane" : "w trakcie")}"));
+                MessageBox.Show($"info {vehMaintenanceId}:\n{result}");
+            }
+            else
+            {
+                MessageBox.Show("Something went wrong...");
+            }
+        }
     }
 
     private bool ClientInfoLoaded { get; set; } = false;
@@ -316,8 +445,9 @@ public partial class MainWindow : Window
 
         Content_Client_Header.Content = "Your Informations!";
         Client_Info_SubmitButton.Visibility = Visibility.Visible;
+        Client_Info_ChangePasswordButton.Visibility = Visibility.Visible;
         Content_Client_Vehicles.Visibility = Visibility.Collapsed;
-        Content_Client_Liabilities.Visibility = Visibility.Collapsed;
+        Content_Client_VehicleHistory.Visibility = Visibility.Collapsed;
         Content_Client_Informations.Visibility = Visibility.Visible;
     }
 
@@ -362,6 +492,12 @@ public partial class MainWindow : Window
                 MessageBox.Show("Something went wrong..");
             }
         }
+    }
+
+    private void Client_Info_ChangPasswordButton_Click(object sender, RoutedEventArgs args)
+    {
+        ChangePasswordWindow cpw = new(this, _user);
+        cpw.ShowDialog();
     }
 
     private void LoadClientInfo()

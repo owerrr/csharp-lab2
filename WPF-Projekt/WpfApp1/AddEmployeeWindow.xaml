@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
-        Title="Employee Management" Height="380" Width="550"
+        Title="Employee Management" Height="410" Width="550"
         ResizeMode="NoResize">
     <Grid>
         <StackPanel Name="EmployeeData">
@@ -50,8 +50,8 @@
                 <TextBox Name="Employee_TextBox_Phonenumber" Grid.Column="1" Grid.Row="1" Width="150" Margin="0 10 0 10" VerticalContentAlignment="Center" />
                 <Label Grid.Column="2" Grid.Row="1" Content="Email:" Margin="10 10 0 10" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                 <TextBox Name="Employee_TextBox_Email" Grid.Column="3" Grid.Row="1" Width="150" Margin="0 10 0 10" VerticalContentAlignment="Center" />
-                <Label Grid.Column="0" Grid.Row="3" Content="Employee rank:" Margin="10 10 0 10" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Label>
-                <ComboBox Name="Employee_ComboBox_Titles" Grid.Column="1" Grid.Row="3" Margin="0 10 0 10" VerticalContentAlignment="Center"></ComboBox>
+                <Label Grid.Column="0" Grid.Row="3" Content="Employee rank:"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Label>
+                <ComboBox Name="Employee_ComboBox_Titles" Grid.Column="1" Grid.Row="3"  VerticalContentAlignment="Center"></ComboBox>
             </Grid>
 
             <Button Name="Employee_Button_ActionButton" Content="Add Employee" Margin="50 15 50 10" Padding="10" Click="Employee_Button_Action_Click" />

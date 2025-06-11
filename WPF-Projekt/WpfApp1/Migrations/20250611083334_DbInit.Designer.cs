@@ -11,7 +11,7 @@ using WpfApp1.Contexts;
 namespace WpfApp1.Migrations
 {
     [DbContext(typeof(WorkshopDbContext))]
-    [Migration("20250610185831_DbInit")]
+    [Migration("20250611083334_DbInit")]
     partial class DbInit
     {
         /// <inheritdoc />
@@ -193,15 +193,53 @@ namespace WpfApp1.Migrations
                         });
                 });
 
-            modelBuilder.Entity("WpfApp1.Models.Employees", b =>
+            modelBuilder.Entity("WpfApp1.Models.EmployeeWorkOnVehicles", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Email")
+                    b.Property<int>("ClientVehicle_Id")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Employee_Id")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsDone")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("WorkOn")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientVehicle_Id");
+
+                    b.HasIndex("Employee_Id");
+
+                    b.ToTable("EmployeeWorkOnVehicles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ClientVehicle_Id = 1,
+                            Date = new DateOnly(2025, 6, 11),
+                            Employee_Id = 1,
+                            IsDone = false,
+                            WorkOn = "wymiana żarówek:25.99:1;wymiana opon:49.99:1;wymiana skrzyni biegow:199.99:0"
+                        });
+                });
+
+            modelBuilder.Entity("WpfApp1.Models.Employees", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Firstname")
                         .IsRequired()
@@ -223,7 +261,6 @@ namespace WpfApp1.Migrations
                         new
                         {
                             Id = 1,
-                            Email = "testowy@mail.com",
                             Firstname = "Denis",
                             Lastname = "Biskup",
                             Phonenumber = "123412341"
@@ -231,7 +268,6 @@ namespace WpfApp1.Migrations
                         new
                         {
                             Id = 2,
-                            Email = "testowy2@mail.com",
                             Firstname = "Testowy",
                             Lastname = "Manager",
                             Phonenumber = "111222333"
@@ -239,7 +275,6 @@ namespace WpfApp1.Migrations
                         new
                         {
                             Id = 3,
-                            Email = "testowy2@mail.com",
                             Firstname = "Testowy",
                             Lastname = "Pracownik",
                             Phonenumber = "111222333"
@@ -254,6 +289,9 @@ namespace WpfApp1.Migrations
 
                     b.Property<int?>("Client_Id")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("Employee_Id")
                         .HasColumnType("INTEGER");
@@ -285,6 +323,7 @@ namespace WpfApp1.Migrations
                         new
                         {
                             Id = 1,
+                            Email = "testowy@mail.com",
                             Employee_Id = 1,
                             Employee_Title_Id = 4,
                             Name = "admin",
@@ -293,6 +332,7 @@ namespace WpfApp1.Migrations
                         new
                         {
                             Id = 2,
+                            Email = "testowy2@mail.com",
                             Employee_Id = 2,
                             Employee_Title_Id = 3,
                             Name = "manager",
@@ -301,9 +341,18 @@ namespace WpfApp1.Migrations
                         new
                         {
                             Id = 3,
+                            Email = "testowy3@mail.com",
                             Employee_Id = 3,
                             Employee_Title_Id = 2,
                             Name = "pracownik",
+                            Password = "$2a$11$5Q4XJlPQM2r2rwk9qMJdp.yT0IYabz6SPq5gpPHggLQkcNTk5Gs6i"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Client_Id = 1,
+                            Email = "user@mail.com",
+                            Name = "user",
                             Password = "$2a$11$5Q4XJlPQM2r2rwk9qMJdp.yT0IYabz6SPq5gpPHggLQkcNTk5Gs6i"
                         });
                 });
@@ -317,6 +366,25 @@ namespace WpfApp1.Migrations
                         .IsRequired();
 
                     b.Navigation("Client");
+                });
+
+            modelBuilder.Entity("WpfApp1.Models.EmployeeWorkOnVehicles", b =>
+                {
+                    b.HasOne("WpfApp1.Models.ClientVehicles", "ClientVehicle")
+                        .WithMany("EmployeeWorkOnVehicles")
+                        .HasForeignKey("ClientVehicle_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WpfApp1.Models.Employees", "Employee")
+                        .WithMany("EmployeeWorkOnVehicles")
+                        .HasForeignKey("Employee_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ClientVehicle");
+
+                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("WpfApp1.Models.Users", b =>
@@ -340,6 +408,11 @@ namespace WpfApp1.Migrations
                     b.Navigation("EmployeeTitle");
                 });
 
+            modelBuilder.Entity("WpfApp1.Models.ClientVehicles", b =>
+                {
+                    b.Navigation("EmployeeWorkOnVehicles");
+                });
+
             modelBuilder.Entity("WpfApp1.Models.Clients", b =>
                 {
                     b.Navigation("User");
@@ -354,6 +427,8 @@ namespace WpfApp1.Migrations
 
             modelBuilder.Entity("WpfApp1.Models.Employees", b =>
                 {
+                    b.Navigation("EmployeeWorkOnVehicles");
+
                     b.Navigation("User");
                 });
 #pragma warning restore 612, 618
