@@ -1,6 +1,8 @@
 ﻿using System.Globalization;
 using System.IO;
+using System.Net.Mail;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -194,6 +196,15 @@ public partial class MainWindow : Window
         Content_Worker_Clients_SearchForClient.Visibility = Visibility.Visible;
         Content_Worker_Clients_FoundClients.Visibility = Visibility.Visible;
     }
+
+    private void Worker_FilterClients_ClearButton_Click(object sender, RoutedEventArgs args)
+    {
+        Content_Worker_Clients_LabelId.Clear();
+        Content_Worker_Clients_LabelFullname.Clear();
+        Content_Worker_Clients_LabelPhonenumber.Clear();
+        Content_Worker_Clients_FoundClients.Children.Clear();
+    }
+
     private void Worker_FilterClients_Click(object sender, RoutedEventArgs args)
     {
         Content_Worker_Clients_FoundClients.Children.Clear();
@@ -218,6 +229,7 @@ public partial class MainWindow : Window
                 catch(Exception ex)
                 {
                     MessageBox.Show("Id must be an integer!");
+                    return;
                 }
             }
             if (!String.IsNullOrEmpty(fullname))
@@ -248,6 +260,7 @@ public partial class MainWindow : Window
             if (!isValidFiltered)
             {
                 MessageBox.Show("At least one field must be filled!");
+                return;
             }
         }
 
@@ -943,6 +956,19 @@ public partial class MainWindow : Window
         Content_Client_Informations.Visibility = Visibility.Visible;
     }
 
+    private bool isValidMail(string email)
+    {
+        try
+        {
+            var addr = new MailAddress(email);
+            return addr.Address == email;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     private void Client_Info_SubmitButton_Verify(object sender, RoutedEventArgs args)
     {
         string firstname = Client_Info_TxtBox_Firstname.Text;
@@ -952,6 +978,7 @@ public partial class MainWindow : Window
         string city = Client_Info_TxtBox_City.Text;
         string street = Client_Info_TxtBox_Street.Text;
         string buildingNo = Client_Info_TxtBox_BuildingNo.Text;
+        string email = Client_Info_TxtBox_Email.Text;
 
         if (String.IsNullOrWhiteSpace(firstname)
             || String.IsNullOrWhiteSpace(lastname)
@@ -960,6 +987,7 @@ public partial class MainWindow : Window
             || String.IsNullOrWhiteSpace(city)
             || String.IsNullOrWhiteSpace(street)
             || String.IsNullOrWhiteSpace(buildingNo)
+            || String.IsNullOrWhiteSpace(email)
         )
         {
             MessageBox.Show("All required fields must be filled!");
@@ -967,17 +995,65 @@ public partial class MainWindow : Window
             return;
         }
 
+        if(!Regex.IsMatch(phonenumber, @"^\d{9}$"))
+        {
+            MessageBox.Show("Phone number is invalid!\nValid: xxxxxxxxx");
+            return;
+        }
+
+        if (!isValidMail(email))
+        {
+            MessageBox.Show("Email is invalid! example email: test@test.com");
+            return;
+        }
+
+        if (!Regex.IsMatch(postalcode, @"^\d{2}-\d{3}$"))
+        {
+            MessageBox.Show("Postal code is not valid!\nWe serve in polish system: xx-xxx");
+            return;
+        }
+
         using (WorkshopDbContext context = new WorkshopDbContext())
         {
+            bool mailExists = context.Users.Any(x => x.Email == email);
+            if (_user.Email != email && mailExists)
+            {
+                MessageBox.Show("Email is already taken by another account, Huh?");
+                return;
+            }
             bool userExists = context.Users.Any(x => x == _user);
 
             if (userExists)
             {
-                Clients c = new Clients { Firstname = firstname, Lastname = lastname, Phonenumber = phonenumber, Postalcode = postalcode, City = city, Street = street, Building_No = buildingNo, User = _user };
-                _user.Client_Id = c.Id;
-                context.Clients.Add(c);
-                context.Update(_user);
-                context.SaveChanges();
+                if(_user.Client_Id != null)
+                {
+                    Clients c = context.Clients.FirstOrDefault(x => x.Id == _user.Client_Id);
+                    c.Firstname = firstname;
+                    c.Lastname = lastname;
+                    c.Phonenumber = phonenumber;
+                    c.Postalcode = postalcode;
+                    c.City = city;
+                    c.Street = street;
+                    c.Building_No = buildingNo;
+                    _user.Email = email;
+                    context.Clients.Update(c);
+                    context.Users.Update(_user);
+                    context.SaveChanges();
+                }
+                else
+                {
+                    Clients c = new Clients { Firstname = firstname, Lastname = lastname, Phonenumber = phonenumber, Postalcode = postalcode, City = city, Street = street, Building_No = buildingNo };
+                    context.Clients.Add(c);
+                    context.SaveChanges();
+                    c.User = _user;
+                    _user.Client_Id = c.Id;
+                    _user.Email = email;
+                    context.Clients.Update(c);
+                    context.Users.Update(_user);
+                    context.SaveChanges();
+                }
+                ClientVehiclesLoaded = false;
+                MessageBox.Show("Successfully saved your info!");
             }
             else
             {
@@ -1010,6 +1086,7 @@ public partial class MainWindow : Window
                     Client_Info_TxtBox_City.Text = c.City;
                     Client_Info_TxtBox_Street.Text = c.Street;
                     Client_Info_TxtBox_BuildingNo.Text = c.Building_No;
+                    Client_Info_TxtBox_Email.Text = _user.Email;
                 }
             }
             else
@@ -1033,10 +1110,19 @@ public partial class MainWindow : Window
             var vehicleToDelete = context.Client_Vehicles.FirstOrDefault(x => x.Id == carId);
             if (vehicleToDelete != null)
             {
-                MessageBoxResult result = MessageBox.Show($"Do you want to delete {vehicleToDelete.Car_Model} Registration Number: {vehicleToDelete.Car_RegNo}?", "Delete vehicle confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                MessageBoxResult result = MessageBox.Show($"Do you want to delete {vehicleToDelete.Car_Model} Registration Number: {vehicleToDelete.Car_RegNo}?\n*deleting this vehicle will delete its maintenance history!", "Delete vehicle confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if (result == MessageBoxResult.Yes)
                 {
-
+                    if (vehicleToDelete.IsMaintenanced)
+                    {
+                        MessageBox.Show("You cannot delete vehicle if its being maintenanced!");
+                        return;
+                    }
+                    List<EmployeeWorkOnVehicles> vehicleWorkToDelete = context.EmployeeWorkOnVehicles.Where(x => x.ClientVehicle_Id == vehicleToDelete.Id).ToList();
+                    foreach(EmployeeWorkOnVehicles vehWork in vehicleWorkToDelete)
+                    {
+                        context.EmployeeWorkOnVehicles.Remove(vehWork);
+                    }
                     context.Client_Vehicles.Remove(vehicleToDelete as ClientVehicles);
                     context.SaveChanges();
                     MessageBox.Show("Vehicle successfully deleted!");

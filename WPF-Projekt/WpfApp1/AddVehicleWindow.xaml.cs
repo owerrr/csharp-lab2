@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -73,10 +74,27 @@ namespace WpfApp1
             if (String.IsNullOrWhiteSpace(model)
                 || String.IsNullOrWhiteSpace(regNo)
                 || String.IsNullOrWhiteSpace(vin)
-                || year == 0
             )
             {
                 MessageBox.Show("You must fill all vehicle informations!");
+                return;
+            }
+
+            if(regNo.Length > 8)
+            {
+                MessageBox.Show("Invalid license plate number!");
+                return;
+            }
+
+            if(!Regex.IsMatch(vin, @"^[A-HJ-NPR-Z0-9]{17}$", RegexOptions.IgnoreCase))
+            {
+                MessageBox.Show("Invalid VIN number!\nValid vin is 17 characters long\nIt doesn't contain: I, O, Q letters.");
+                return;
+            }
+
+            if(year < 1000 || year > DateTime.Now.Year)
+            {
+                MessageBox.Show("Invalid car year! Please check it out and try again.");
                 return;
             }
 

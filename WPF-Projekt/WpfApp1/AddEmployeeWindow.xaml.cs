@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using WpfApp1.Contexts;
 using WpfApp1.Models;
+using System.Net.Mail;
 
 namespace WpfApp1
 {
@@ -97,6 +98,19 @@ namespace WpfApp1
             cpw.ShowDialog();
         }
 
+        private bool isValidMail(string email)
+        {
+            try
+            {
+                var addr = new MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
+        } 
+
         private void Employee_Button_Action_Click(object sender, RoutedEventArgs args)
         {
             var firstname = Employee_TextBox_Firstname.Text;
@@ -114,7 +128,13 @@ namespace WpfApp1
                 return;
             }
 
-            if(!Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            if(!Regex.IsMatch(phonenumber, @"^\d{9}$"))
+            {
+                MessageBox.Show("Invalid phone number!\nValid syntax: xxxxxxxxx");
+                return;
+            }
+
+            if(!isValidMail(email))
             {
                 MessageBox.Show("Email is invalid! example email: test@test.com");
                 return;
