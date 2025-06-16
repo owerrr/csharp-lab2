@@ -53,36 +53,463 @@ public partial class MainWindow : Window
     }
     private void Worker_Button_ManageVehicles_Click(object sender, RoutedEventArgs args)
     {
-        Content_Worker_Header.Content = "Client Vehicles";
+        Content_Worker_Header.Content = "Currently working on:";
         Content_Manager_Employees.Visibility = Visibility.Collapsed;
         Content_Worker_Clients.Visibility = Visibility.Collapsed;
-        Content_Worker_Vehicles.Visibility = Visibility.Visible;
+        Content_Worker_ManageVehicles.Visibility = Visibility.Visible;
+        Content_Worker_Clients_FoundClients_ViewVehicles.Visibility = Visibility.Collapsed;
 
         Worker_LoadVehicles();
     }
+
+    public void Worker_RefreshClientVehiclesManageList()
+    {
+        Worker_LoadVehicles();
+    }
+
     private void Worker_LoadVehicles()
     {
+        List<EmployeeWorkOnVehicles> vehicles = new();
+        using (WorkshopDbContext context = new WorkshopDbContext())
+        {
+            vehicles = context.EmployeeWorkOnVehicles.Where(x => !x.IsDone).ToList();
+        }
+
+        Content_Worker_ManageVehicles.Children.Clear();
+
+        if (vehicles.Count > 0)
+        {
+            var grid = new Grid { Margin = new Thickness(0, 0, 0, 10) };
+
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+            grid.RowDefinitions.Add(new RowDefinition());
+
+            var headerId = new Label { Content = "Id", FontWeight = FontWeights.Bold, VerticalAlignment = VerticalAlignment.Center };
+            var headerModel = new Label { Content = "Model", FontWeight = FontWeights.Bold, VerticalAlignment = VerticalAlignment.Center };
+            var headerYear = new Label { Content = "Year", FontWeight = FontWeights.Bold, VerticalAlignment = VerticalAlignment.Center };
+            var headerRegNo = new Label { Content = "License plate", FontWeight = FontWeights.Bold, VerticalAlignment = VerticalAlignment.Center };
+            var headerVIN = new Label { Content = "VIN", FontWeight = FontWeights.Bold, VerticalAlignment = VerticalAlignment.Center };
+
+            Grid.SetColumn(headerId, 0);
+            Grid.SetColumn(headerModel, 1);
+            Grid.SetColumn(headerYear, 2);
+            Grid.SetColumn(headerRegNo, 3);
+            Grid.SetColumn(headerVIN, 4);
+
+            Grid.SetRow(headerId, 0);
+            Grid.SetRow(headerModel, 0);
+            Grid.SetRow(headerYear, 0);
+            Grid.SetRow(headerRegNo, 0);
+            Grid.SetRow(headerVIN, 0);
+
+            grid.Children.Add(headerId);
+            grid.Children.Add(headerModel);
+            grid.Children.Add(headerYear);
+            grid.Children.Add(headerRegNo);
+            grid.Children.Add(headerVIN);
+
+            int rowIdx = 1;
+            foreach (EmployeeWorkOnVehicles vehicle in vehicles)
+            {
+                ClientVehicles veh = null;
+                using (WorkshopDbContext context = new WorkshopDbContext())
+                {
+                    veh = context.Client_Vehicles.FirstOrDefault(x => x.Id == vehicle.ClientVehicle_Id);
+                }
+                if(veh == null)
+                {
+                    MessageBox.Show("Something went wrong...");
+                    return;
+                }
+
+                grid.RowDefinitions.Add(new RowDefinition());
+
+                var labelId = new Label { Content = $"{veh.Id}", VerticalAlignment = VerticalAlignment.Center };
+                var labelModel = new Label { Content = $"{veh.Car_Model}", VerticalAlignment = VerticalAlignment.Center };
+                var labelYear = new Label { Content = $"{veh.Car_Year}", VerticalAlignment = VerticalAlignment.Center };
+                var labelRegNo = new Label { Content = $"{veh.Car_RegNo}", VerticalAlignment = VerticalAlignment.Center };
+                var labelVIN = new Label { Content = $"{veh.Car_Vin}", VerticalAlignment = VerticalAlignment.Center };
+                var buttonInfo = new Button { Content = "VIEW", Style = (Style)Application.Current.FindResource("Client_Vehicle_ModifyBtn"), VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 5, 5, 5), Name = $"Worker_ManageVehicles_ViewVehicleButton_{vehicle.Id}" };
+
+                buttonInfo.Click += Content_Worker_ManageVehicles_ViewVehicleButton_Click;
+
+                Grid.SetColumn(labelId, 0);
+                Grid.SetColumn(labelModel, 1);
+                Grid.SetColumn(labelYear, 2);
+                Grid.SetColumn(labelRegNo, 3);
+                Grid.SetColumn(labelVIN, 4);
+                Grid.SetColumn(buttonInfo, 5);
+
+                Grid.SetRow(labelId, rowIdx);
+                Grid.SetRow(labelModel, rowIdx);
+                Grid.SetRow(labelYear, rowIdx);
+                Grid.SetRow(labelRegNo, rowIdx);
+                Grid.SetRow(labelVIN, rowIdx);
+                Grid.SetRow(buttonInfo, rowIdx);
+
+                rowIdx++;
+
+                grid.Children.Add(labelId);
+                grid.Children.Add(labelModel);
+                grid.Children.Add(labelYear);
+                grid.Children.Add(labelRegNo);
+                grid.Children.Add(labelVIN);
+                grid.Children.Add(buttonInfo);
+
+
+            }
+
+            Content_Worker_ManageVehicles.Children.Add(grid);
+        }
 
     }
+
+    private void Content_Worker_ManageVehicles_ViewVehicleButton_Click(object sender, RoutedEventArgs args)
+    {
+        int vehId = Convert.ToInt32((sender as Button).Name.Split("_").Last());
+        using (WorkshopDbContext context = new WorkshopDbContext())
+        {
+            EmployeeWorkOnVehicles veh = context.EmployeeWorkOnVehicles.FirstOrDefault(x => x.Id == vehId);
+            if (veh != null)
+            {
+                ManageVehicleWindow mvw = new ManageVehicleWindow(veh, this);
+                mvw.ShowDialog();
+            }
+        }
+    }
+
     private void Worker_Button_ViewClients_Click(object sender, RoutedEventArgs args)
     {
         Content_Worker_Header.Content = "Current Clients";
         Content_Manager_Employees.Visibility = Visibility.Collapsed;
-        Content_Worker_Clients.Visibility = Visibility.Collapsed;
-        Content_Worker_Vehicles.Visibility = Visibility.Visible;
-
-        Worker_LoadCLients();
+        Content_Worker_Clients.Visibility = Visibility.Visible;
+        Content_Worker_ManageVehicles.Visibility = Visibility.Collapsed;
+        Content_Worker_Clients_FoundClients_ViewVehicles.Visibility = Visibility.Collapsed;
+        Content_Worker_Clients_SearchForClient.Visibility = Visibility.Visible;
+        Content_Worker_Clients_FoundClients.Visibility = Visibility.Visible;
     }
-    private void Worker_LoadCLients()
+    private void Worker_FilterClients_Click(object sender, RoutedEventArgs args)
     {
+        Content_Worker_Clients_FoundClients.Children.Clear();
+
+        var id = Content_Worker_Clients_LabelId.Text;
+        var fullname = Content_Worker_Clients_LabelFullname.Text;
+        var phonenumber = Content_Worker_Clients_LabelPhonenumber.Text;
+
+        bool isValidFiltered = false;
+        List<Clients> filteredList = new();
+
+        using (WorkshopDbContext context = new WorkshopDbContext())
+        {
+            
+            if (!String.IsNullOrEmpty(id))
+            {
+                try
+                {
+                    filteredList = context.Clients.Where(x => x.Id == Convert.ToInt32(id)).ToList();
+                    isValidFiltered = true;
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show("Id must be an integer!");
+                }
+            }
+            if (!String.IsNullOrEmpty(fullname))
+            {
+                if(filteredList.Count > 0)
+                {
+                    filteredList = filteredList.Where(x => (x.Firstname + " " + x.Lastname).ToLower().StartsWith(fullname.ToLower())).ToList();
+                }
+                else
+                {
+                    filteredList = context.Clients.Where(x => (x.Firstname + " " + x.Lastname).ToLower().StartsWith(fullname.ToLower())).ToList();
+                }
+                isValidFiltered = true;
+            }
+            if (!String.IsNullOrEmpty(phonenumber))
+            {
+                if(filteredList.Count > 0)
+                {
+                    filteredList = filteredList.Where(x => x.Phonenumber.StartsWith(phonenumber)).ToList();
+                }
+                else
+                {
+                    filteredList = context.Clients.Where(x => x.Phonenumber.StartsWith(phonenumber)).ToList();
+                }
+                isValidFiltered = true;
+            }
+
+            if (!isValidFiltered)
+            {
+                MessageBox.Show("At least one field must be filled!");
+            }
+        }
+
+        var grid = new Grid { Margin = new Thickness(0, 0, 0, 10) };
+
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+        grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+        var headerFullname = new Label { Content = "Fullname", VerticalAlignment = VerticalAlignment.Center, FontWeight = FontWeights.Bold };
+        var headerPhonenumber = new Label { Content = "Phonenumber", VerticalAlignment = VerticalAlignment.Center, FontWeight = FontWeights.Bold };
+        var headerCity = new Label { Content = "City", VerticalAlignment = VerticalAlignment.Center, FontWeight = FontWeights.Bold };
+        var headerPostalcode = new Label { Content = "Postal code", VerticalAlignment = VerticalAlignment.Center, FontWeight = FontWeights.Bold };
+        var headerStreet = new Label { Content = "Street", VerticalAlignment = VerticalAlignment.Center, FontWeight = FontWeights.Bold };
+        var headerBuildingNo = new Label { Content = "Building", VerticalAlignment = VerticalAlignment.Center, FontWeight = FontWeights.Bold };
+
+        Grid.SetColumn(headerFullname, 0);
+        Grid.SetColumn(headerPhonenumber, 1);
+        Grid.SetColumn(headerCity, 2);
+        Grid.SetColumn(headerPostalcode, 3);
+        Grid.SetColumn(headerStreet, 4);
+        Grid.SetColumn(headerBuildingNo, 5);
+
+        Grid.SetRow(headerFullname, 0);
+        Grid.SetRow(headerPhonenumber, 0);
+        Grid.SetRow(headerCity, 0);
+        Grid.SetRow(headerPostalcode, 0);
+        Grid.SetRow(headerStreet, 0);
+        Grid.SetRow(headerBuildingNo, 0);
+
+        grid.Children.Add(headerFullname);
+        grid.Children.Add(headerPhonenumber);
+        grid.Children.Add(headerCity);
+        grid.Children.Add(headerPostalcode);
+        grid.Children.Add(headerStreet);
+        grid.Children.Add(headerBuildingNo);
+
+        int rowIdx = 1;
+
+        foreach(Clients c in filteredList)
+        {
+            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+            var labelFullname = new Label { Content = $"{c.Firstname} {c.Lastname}", VerticalAlignment = VerticalAlignment.Center };
+            var labelPhonenumber = new Label { Content = $"{c.Phonenumber}", VerticalAlignment = VerticalAlignment.Center };
+            var labelCity = new Label { Content = $"{c.City}", VerticalAlignment = VerticalAlignment.Center };
+            var labelPostalcode = new Label { Content = $"{c.Postalcode}", VerticalAlignment = VerticalAlignment.Center };
+            var labelStreet = new Label { Content = $"{c.Street}", VerticalAlignment = VerticalAlignment.Center };
+            var labelBuildingNo = new Label { Content = $"{c.Building_No}", VerticalAlignment = VerticalAlignment.Center };
+
+            Grid.SetColumn(labelFullname, 0);
+            Grid.SetColumn(labelPhonenumber, 1);
+            Grid.SetColumn(labelCity, 2);
+            Grid.SetColumn(labelPostalcode, 3);
+            Grid.SetColumn(labelStreet, 4);
+            Grid.SetColumn(labelBuildingNo, 5);
+
+            Grid.SetRow(labelFullname, rowIdx);
+            Grid.SetRow(labelPhonenumber, rowIdx);
+            Grid.SetRow(labelCity, rowIdx);
+            Grid.SetRow(labelPostalcode, rowIdx);
+            Grid.SetRow(labelStreet, rowIdx);
+            Grid.SetRow(labelBuildingNo, rowIdx);
+
+            grid.Children.Add(labelFullname);
+            grid.Children.Add(labelPhonenumber);
+            grid.Children.Add(labelCity);
+            grid.Children.Add(labelPostalcode);
+            grid.Children.Add(labelStreet);
+            grid.Children.Add(labelBuildingNo);
+
+            var button = new Button { Content = "VEHICLES", Style = (Style)Application.Current.FindResource("Client_Vehicle_ModifyBtn"), VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 5, 5, 5), Name = $"Worker_Button_ViewClientVehicles_{c.Id}" };
+            button.Click += Worker_Button_ViewClientVehicles_Click;
+            Grid.SetColumn(button, 6);
+            Grid.SetRow(button, rowIdx);
+
+            grid.Children.Add(button);
+
+            rowIdx++;
+        }
+
+        Content_Worker_Clients_FoundClients.Children.Add(grid);
+    }
+
+    private void Worker_FilterClients_BackButton_Click(object sender, RoutedEventArgs args)
+    {
+        Content_Worker_Header.Content = "Current Clients";
+        Content_Worker_Clients_FoundClients_ViewVehicles_Data.Children.Clear();
+        Content_Worker_Clients_FoundClients.Visibility = Visibility.Visible;
+        Content_Worker_Clients_SearchForClient.Visibility = Visibility.Visible;
+        Content_Worker_Clients_FoundClients_ViewVehicles.Visibility = Visibility.Collapsed;
 
     }
+
+    private void Worker_Button_ViewClientVehicles_Click(object sender, RoutedEventArgs args)
+    {
+        Content_Worker_Clients_FoundClients.Visibility = Visibility.Collapsed;
+        Content_Worker_Clients_SearchForClient.Visibility = Visibility.Collapsed;
+        Content_Worker_Clients_FoundClients_ViewVehicles.Visibility = Visibility.Visible;
+
+        int clientId = Convert.ToInt32((sender as Button).Name.Split("_").Last());
+        List<ClientVehicles> clientVehicles = new();
+
+        using (WorkshopDbContext context = new WorkshopDbContext())
+        {
+            clientVehicles = context.Client_Vehicles.Where(x => x.Client_Id == clientId).ToList();
+        }
+
+        if (clientVehicles.Count > 0)
+        {
+            var grid = Content_Worker_Clients_FoundClients_ViewVehicles_Data;
+
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+            grid.RowDefinitions.Add(new RowDefinition());
+
+            var headerId = new Label { Content = "Id", FontWeight = FontWeights.Bold, VerticalAlignment = VerticalAlignment.Center };
+            var headerModel = new Label { Content = "Model", FontWeight = FontWeights.Bold, VerticalAlignment = VerticalAlignment.Center };
+            var headerYear = new Label { Content = "Year", FontWeight = FontWeights.Bold, VerticalAlignment = VerticalAlignment.Center };
+            var headerRegNo = new Label { Content = "License plate", FontWeight = FontWeights.Bold, VerticalAlignment = VerticalAlignment.Center };
+            var headerVIN = new Label { Content = "VIN", FontWeight = FontWeights.Bold, VerticalAlignment = VerticalAlignment.Center };
+            var headerIsMaintenanced = new Label { Content = "Is Maintenanced", FontWeight = FontWeights.Bold, VerticalAlignment = VerticalAlignment.Center };
+
+            Grid.SetColumn(headerId, 0);
+            Grid.SetColumn(headerModel, 1);
+            Grid.SetColumn(headerYear, 2);
+            Grid.SetColumn(headerRegNo, 3);
+            Grid.SetColumn(headerVIN, 4);
+            Grid.SetColumn(headerIsMaintenanced, 5);
+
+            Grid.SetRow(headerId, 0);
+            Grid.SetRow(headerModel, 0);
+            Grid.SetRow(headerYear, 0);
+            Grid.SetRow(headerRegNo, 0);
+            Grid.SetRow(headerVIN, 0);
+            Grid.SetRow(headerIsMaintenanced, 0);
+
+            grid.Children.Add(headerId);
+            grid.Children.Add(headerModel);
+            grid.Children.Add(headerYear);
+            grid.Children.Add(headerRegNo);
+            grid.Children.Add(headerVIN);
+            grid.Children.Add(headerIsMaintenanced);
+
+            int rowIdx = 1;
+            foreach(ClientVehicles veh in clientVehicles)
+            {
+                grid.RowDefinitions.Add(new RowDefinition());
+
+                var labelId = new Label { Content = $"{veh.Id}", VerticalAlignment = VerticalAlignment.Center };
+                var labelModel = new Label { Content = $"{veh.Car_Model}", VerticalAlignment = VerticalAlignment.Center };
+                var labelYear = new Label { Content = $"{veh.Car_Year}", VerticalAlignment = VerticalAlignment.Center };
+                var labelRegNo = new Label { Content = $"{veh.Car_RegNo}", VerticalAlignment = VerticalAlignment.Center };
+                var labelVIN = new Label { Content = $"{veh.Car_Vin}", VerticalAlignment = VerticalAlignment.Center };
+                var labelIsMaintenanced = new CheckBox { IsChecked = veh.IsMaintenanced, IsEnabled = false, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
+
+                var buttonInfo = new Button { Content = "MANAGE", Style = (Style)Application.Current.FindResource("Client_Vehicle_ModifyBtn"), VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 5, 5, 5), Name = $"Worker_ClientVehicles_ManageVehicleButton_{veh.Id}" };
+
+                buttonInfo.Click += Worker_ViewClientVehicles_ManageVehicleButton_Click;
+
+                Grid.SetColumn(labelId, 0);
+                Grid.SetColumn(labelModel, 1);
+                Grid.SetColumn(labelYear, 2);
+                Grid.SetColumn(labelRegNo, 3);
+                Grid.SetColumn(labelVIN, 4);
+                Grid.SetColumn(labelIsMaintenanced, 5);
+                Grid.SetColumn(buttonInfo, 6);
+
+                Grid.SetRow(labelId, rowIdx);
+                Grid.SetRow(labelModel, rowIdx);
+                Grid.SetRow(labelYear, rowIdx);
+                Grid.SetRow(labelRegNo, rowIdx);
+                Grid.SetRow(labelVIN, rowIdx);
+                Grid.SetRow(labelIsMaintenanced, rowIdx);
+                Grid.SetRow(buttonInfo, rowIdx);
+
+                rowIdx++;
+
+                grid.Children.Add(labelId);
+                grid.Children.Add(labelModel);
+                grid.Children.Add(labelYear);
+                grid.Children.Add(labelRegNo);
+                grid.Children.Add(labelVIN);
+                grid.Children.Add(labelIsMaintenanced);
+                grid.Children.Add(buttonInfo);
+
+
+        }
+            Content_Worker_Clients_FoundClients_ViewVehiclesLabel.Content = $"Viewing client id {clientId} vehicles:";
+            Content_Worker_Clients_FoundClients_ViewVehiclesLabel.Visibility = Visibility.Visible;
+        }
+        else
+        {
+            Content_Worker_Clients_FoundClients_ViewVehiclesLabel.Content = "Client have no vehicles registered!";
+        }
+
+    }
+
+    private void Worker_ViewClientVehicles_ManageVehicleButton_Click(object sender, RoutedEventArgs args)
+    {
+        int vehId = Convert.ToInt32((sender as Button).Name.Split("_").Last());
+        ClientVehicles foundVeh = null;
+        using(WorkshopDbContext context = new WorkshopDbContext())
+        {
+            foundVeh = context.Client_Vehicles.FirstOrDefault(x => x.Id == vehId);
+            if (foundVeh != null)
+            {
+                if (!foundVeh.IsMaintenanced)
+                {
+                    MessageBoxResult resultVehDone = MessageBox.Show($"Do you wish to create a new manage request on this vehicle?", "Manage Vehicle", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (resultVehDone == MessageBoxResult.Yes)
+                    {
+                        EmployeeWorkOnVehicles newVeh = new EmployeeWorkOnVehicles { ClientVehicle_Id = foundVeh.Id, Employee_Id = _user.Id, Date = DateOnly.FromDateTime(DateTime.Today), WorkOn = "" };
+                        foundVeh.IsMaintenanced = true;
+                        context.EmployeeWorkOnVehicles.Add(newVeh);
+                        context.Client_Vehicles.Update(foundVeh);
+                        context.SaveChanges();
+                        ManageVehicleWindow mvw = new(newVeh, this);
+                        mvw.ShowDialog();
+                    }
+                }
+                else
+                {
+                    MessageBoxResult resultVehNotDone = MessageBox.Show($"Do you want to view active manage request on this vehicle?", "Manage Vehicle", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (resultVehNotDone == MessageBoxResult.Yes)
+                    {
+                        EmployeeWorkOnVehicles vehToWork = context.EmployeeWorkOnVehicles.OrderBy(x => x.Id).LastOrDefault(x => x.ClientVehicle_Id == foundVeh.Id);
+                        if(vehToWork != null)
+                        {
+                            ManageVehicleWindow mvw = new(vehToWork, this);
+                            mvw.ShowDialog();
+                        }
+                    }
+                }
+            }
+            else
+            {
+            MessageBox.Show("Something went wrong...");
+            }
+        }        
+    }
+
+
     private void Manager_Button_ViewEmployees_Click(object sender, RoutedEventArgs args)
     {
         Content_Worker_Header.Content = "Current Employees";
         Content_Manager_Employees.Visibility = Visibility.Visible;
         Content_Worker_Clients.Visibility = Visibility.Collapsed;
-        Content_Worker_Vehicles.Visibility = Visibility.Collapsed;
+        Content_Worker_ManageVehicles.Visibility = Visibility.Collapsed;
+        Content_Worker_Clients_FoundClients_ViewVehicles.Visibility = Visibility.Collapsed;
 
         Manager_LoadEmployees();
     }
@@ -106,14 +533,14 @@ public partial class MainWindow : Window
             {
                 var scrollView = new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled, MaxHeight = 170 };
 
-                var grid = new Grid { Margin = new Thickness(0, 0, 0, 10) };
+                var grid = new Grid { Margin = new Thickness(0, 0, 0, 10), HorizontalAlignment = HorizontalAlignment.Center };
 
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-                grid.ColumnDefinitions.Add(new ColumnDefinition());
+                grid.ColumnDefinitions.Add(new ColumnDefinition{ Width = GridLength.Auto });
 
                 grid.RowDefinitions.Add(new RowDefinition());
 

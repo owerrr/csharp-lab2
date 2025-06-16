@@ -59,13 +59,13 @@ namespace WpfApp1.Contexts
             );
 
             modelBuilder.Entity<ClientVehicles>().HasData(
-                new ClientVehicles { Id=1, Client_Id=1, Car_Model="Seat Ibiza 3", Car_Vin="3VWSB81H8WM210368", Car_RegNo="KWI9123", Car_Year=2003},
+                new ClientVehicles { Id=1, Client_Id=1, Car_Model="Seat Ibiza 3", Car_Vin="3VWSB81H8WM210368", Car_RegNo="KWI9123", Car_Year=2003, IsMaintenanced = true},
                 new ClientVehicles { Id=2, Client_Id=1, Car_Model="Dodge Ram Pickup", Car_Vin= "1D7HA16D94J171206", Car_RegNo="KRTEST", Car_Year=2016}
             );
 
             modelBuilder.Entity<EmployeeWorkOnVehicles>().HasData(
                 new EmployeeWorkOnVehicles { Id = 1, ClientVehicle_Id = 1, Employee_Id = 1, Date = DateOnly.FromDateTime(DateTime.Today), WorkOn = "wymiana żarówek:25.99:1;wymiana opon:49.99:1;wymiana skrzyni biegow:199.99:0" },
-                new EmployeeWorkOnVehicles { Id = 2, ClientVehicle_Id = 2, Employee_Id = 1, Date = DateOnly.FromDateTime(DateTime.Today), WorkOn = "wymiana żarówek:25.99:1;wymiana opon:49.99:1;wymiana skrzyni biegow:199.99:0" }
+                new EmployeeWorkOnVehicles { Id = 2, ClientVehicle_Id = 2, Employee_Id = 1, Date = DateOnly.FromDateTime(DateTime.Today), WorkOn = "wymiana żarówek:25.99:1;wymiana opon:49.99:1;wymiana skrzyni biegow:199.99:1", IsDone = true }
             );
         }
     }

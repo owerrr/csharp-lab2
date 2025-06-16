@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
-        Title="MainWindow" Height="500" Width="800"
+        Title="MainWindow" Height="500" Width="900"
         ResizeMode="NoResize">
     <Grid>
         <Grid.RowDefinitions>
@@ -21,13 +21,13 @@
             <Label Content="Welcome" HorizontalAlignment="Right" Name="Nav_WelcomeLabel"></Label>
             <Button Content="Log out" HorizontalAlignment="Right" Margin="0 0 5 0" Padding="5 2" Click="LogOut_Button_Click"></Button>
         </StackPanel>
-        <StackPanel Grid.Row="1" Name="Buttons_Worker" Margin="50 10" Visibility="Collapsed">
+        <StackPanel Grid.Row="1" Name="Buttons_Worker" Margin="20 10" Visibility="Visible">
             <Button Content="View Employees!" Name="Button_Manager_ViewEmployees" HorizontalAlignment="Stretch" Style="{StaticResource RoundedButtonStyle}" Click="Manager_Button_ViewEmployees_Click"></Button>
             <Button Content="View Clients!" Name="Button_Worker_ViewClients" HorizontalAlignment="Stretch" Style="{StaticResource RoundedButtonStyle}" Click="Worker_Button_ViewClients_Click"></Button>
             <Button Content="Manage Vehicles!" Name="Button_Worker_ManageVehicles" HorizontalAlignment="Stretch" Style="{StaticResource RoundedButtonStyle}" Click="Worker_Button_ManageVehicles_Click"></Button>
         </StackPanel>
 
-        <StackPanel Grid.Row="1" Grid.Column="1" Name="Content_Worker" Margin="50 10" Visibility="Collapsed">
+        <StackPanel Grid.Row="1" Grid.Column="1" Name="Content_Worker" Margin="50 10" Visibility="Visible">
             <Label Content="Jakis test" Name="Content_Worker_Header" FontSize="48" HorizontalContentAlignment="center"></Label>
 
             <StackPanel Name="Content_Manager_Employees" Visibility="Collapsed">
@@ -35,10 +35,52 @@
             </StackPanel>
 
             <StackPanel Name="Content_Worker_Clients" Visibility="Collapsed">
-                
+                <Label Content="Search for client" FontSize="18" FontWeight="Bold"/>
+                <Grid Name="Content_Worker_Clients_SearchForClient">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="40" />
+                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="93" />
+                        <ColumnDefinition Width="93" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Content="Id"></Label>
+                    <Label Grid.Row="0" Grid.Column="1" Content="Fullname"></Label>
+                    <Label Grid.Row="0" Grid.Column="2" Content="Phonenumber"></Label>
+                    
+                    <TextBox Name="Content_Worker_Clients_LabelId" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Padding="5"></TextBox>
+                    <TextBox Name="Content_Worker_Clients_LabelFullname" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Padding="5"></TextBox>
+                    <TextBox Name="Content_Worker_Clients_LabelPhonenumber" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Padding="5"></TextBox>
+                    <Button Grid.Row="1" Grid.Column="3" Content="Search" HorizontalAlignment="Stretch" Padding="5" Click="Worker_FilterClients_Click"></Button>
+                    <Button Grid.Row="1" Grid.Column="4" Content="Clear" HorizontalAlignment="Stretch" Padding="5"></Button>
+                </Grid>
+
+                <StackPanel Name="Content_Worker_Clients_FoundClients"></StackPanel>
             </StackPanel>
 
-            <StackPanel Name="Content_Worker_Vehicles" Visibility="Collapsed">
+            <StackPanel Name="Content_Worker_Clients_FoundClients_ViewVehicles" Visibility="Collapsed">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Column="0" Name="Content_Worker_Clients_FoundClients_ViewVehiclesLabel" Content = "Viewing xxx Vehicles" FontWeight = "Bold" FontSize = "18"></Label>
+                    <Button Grid.Column="1" Style="{StaticResource VehicleRefreshButtonStyle}" Content="BACK" Width="100" Click="Worker_FilterClients_BackButton_Click"></Button>
+                </Grid>
+                
+                <Grid Name="Content_Worker_Clients_FoundClients_ViewVehicles_Data">
+                    
+                </Grid>
+            </StackPanel>
+
+            <StackPanel Name="Content_Worker_ManageVehicles" Visibility="Collapsed">
                 
             </StackPanel>
         </StackPanel>
